@@ -1,2 +1,4 @@
 libxrender1
+libxext6
+libgomp1
 default-jre
