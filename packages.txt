@@ -3,3 +3,4 @@ libxext6
 libgomp1
 default-jre
 libstdc++12
+libglib2.0-0
