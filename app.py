@@ -1,6 +1,10 @@
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
+from rdkit.Chem import Descriptors
+from rdkit.Chem import Lipinski
+import plotly.graph_objects as go
+import numpy as np
 
 # Define SMARTS patterns and their associated MIEs
 smarts_mie_mapping = {
@@ -55,10 +59,47 @@ with tab1:
         except:
             st.error("Invalid SMILES input.")
 
-    # Display molecule and SMARTS matches with MIEs
+    # Display molecule and SMARTS matches with MIEs and Lipinski properties
     if mol:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
+
+        # Calculate Lipinski's properties
+        mw = Descriptors.MolWt(mol)
+        logp = Descriptors.MolLogP(mol)
+        hbd = Lipinski.NumHDonors(mol)
+        hba = Lipinski.NumHAcceptors(mol)
+
+        lipinski_properties = {
+            "MW": mw,
+            "LogP": logp,
+            "HBD": hbd,
+            "HBA": hba,
+        }
+
+        st.subheader("Lipinski's Rule of Five Properties:")
+        st.write(lipinski_properties)
+
+        # Create radar plot
+        categories = list(lipinski_properties.keys())
+        values = list(lipinski_properties.values())
+
+        fig = go.Figure(data=[go.Scatterpolar(
+            r=values + [values[0]],
+            theta=categories + [categories[0]],
+            fill='toself',
+            name='Lipinski Properties'
+        )])
+
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    rangemode='tozero'
+                )),
+            showlegend=False
+        )
+        st.plotly_chart(fig)
 
         st.subheader("SMARTS Matching Results with Associated MIEs:")
         results = []
@@ -91,6 +132,7 @@ with tab2:
         - **Streamlit:** For creating the interactive web application.
         - **RDKit:** For chemical informatics tasks, including SMILES parsing and SMARTS matching.
         - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
+        - **Plotly:** For creating interactive plots.
         """
     )
 
