@@ -102,7 +102,7 @@ with tab3:
     st.markdown(f"""
         Developers:
 
-        **{", ".join(developers)}**
+        {", ".join(developers)}
         {affiliation}
 
         ### Contact Us
