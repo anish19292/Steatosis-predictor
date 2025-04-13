@@ -80,7 +80,7 @@ with tab2:
     st.markdown(
         """
         ### Purpose
-        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns. 
+        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns.
 
         The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs).
 
@@ -93,18 +93,15 @@ with tab2:
         - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
         """
     )
-    
+
 # Tab 3: Contact
 with tab3:
     st.header("About Us")
-    st.markdown(
-        """
+    developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
+    st.markdown(f"""
         Developers:
 
-        **Anish Gomatam**
-        **James Firman**
-        **Georgios Chrysochoou**
-        **Mark Cronin**
+        **{", ".join(developers)}**
         [School of Pharmacy and Biomolecular Sciences, Liverpool John Moores University]
         [Liverpool, United Kingdom]
 
@@ -114,6 +111,5 @@ with tab3:
         - **Email:** [Your Email Address(es)]
         - **LinkedIn:** [Your LinkedIn Profile URL(s) (Optional)]
         - **GitHub:** [Your GitHub Repository URL(s) (Optional)]
-
         """
     )
