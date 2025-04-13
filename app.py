@@ -1,6 +1,7 @@
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
+from rdkit.Chem.Draw import rdMolDraw2D
 
 # Define SMARTS patterns and their associated MIEs
 smarts_mie_mapping = {
@@ -58,14 +59,24 @@ with tab1:
     # Display molecule and SMARTS matches with MIEs
     if mol:
         st.subheader("Molecule Structure")
-        st.image(Draw.MolToImage(mol, size=(300, 300)))
+        img = Draw.MolToImage(mol, size=(300, 300))
+        st.image(img)
 
         st.subheader("SMARTS Matching Results with Associated MIEs:")
         results = []
         for smarts, mies in smarts_mie_mapping.items():
             pattern = Chem.MolFromSmarts(smarts)
-            if mol.HasSubstructMatch(pattern):
-                results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies)})
+            if pattern:
+                matches = mol.GetSubstructMatches(pattern)
+                if matches:
+                    atom_indices = set(atom_index for match in matches for atom_index in match)
+                    d = rdMolDraw2D.MolDraw2DCairo(300, 300)
+                    rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=list(atom_indices))
+                    d.FinishDrawing()
+                    bio = d.GetDrawingText()
+                    image_bytes = bio.encode('utf-8')
+                    st.image(image_bytes)
+                    results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies)})
 
         if results:
             st.dataframe(results)
