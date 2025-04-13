@@ -14,7 +14,7 @@ pattern_names = [
 ]
 
 # Page title
-st.title("Steatosis SMARTS Matcher")
+st.title("Steatosis Predictor")
 st.write("Enter a SMILES string to check for steatosis structural alerts.")
 
 # Input: SMILES string
