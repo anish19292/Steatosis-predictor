@@ -73,9 +73,8 @@ with tab1:
                     d = rdMolDraw2D.MolDraw2DCairo(300, 300)
                     rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=list(atom_indices))
                     d.FinishDrawing()
-                    bio = d.GetDrawingText()
-                    image_bytes = bio.encode('utf-8')
-                    st.image(image_bytes)
+                    image_string = d.GetDrawingText()
+                    st.image(image_string)
                     results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies)})
 
         if results:
