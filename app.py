@@ -74,7 +74,7 @@ with tab1:
     else:
         st.info("Please enter a SMILES string.")
 
-# Tab 2: Technical Info
+# Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
     st.markdown(
@@ -94,18 +94,19 @@ with tab2:
         """
     )
     
-# Tab 3: About Us/Contact
+# Tab 3: Contact
 with tab3:
     st.header("About Us")
     st.markdown(
         """
-        This Steatosis Predictor application was developed by:
+        Developers:
 
-        **[Your Name/Team Name]**
-        [Your Affiliation/Organization (Optional)]
-        [Your Location (Optional)]
-
-        We are a team dedicated to [briefly describe your team's focus or goals, e.g., applying cheminformatics to understand biological processes].
+        **Anish Gomatam**
+        **James Firman**
+        **Georgios Chrysochoou**
+        **Mark Cronin**
+        [School of Pharmacy and Biomolecular Sciences, Liverpool John Moores University]
+        [Liverpool, United Kingdom]
 
         ### Contact Us
         For any inquiries, feedback, or collaborations, please feel free to reach out:
@@ -114,6 +115,5 @@ with tab3:
         - **LinkedIn:** [Your LinkedIn Profile URL(s) (Optional)]
         - **GitHub:** [Your GitHub Repository URL(s) (Optional)]
 
-        We welcome your feedback on how to improve this application!
         """
     )
