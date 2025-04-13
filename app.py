@@ -98,7 +98,7 @@ with tab2:
 with tab3:
     st.header("About Us")
     developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
-    affiliation = "[School of Pharmacy and Biomolecular Sciences, Liverpool John Moores University]\n[Liverpool, United Kingdom]"
+    affiliation = "School of Pharmacy and Biomolecular Sciences, Liverpool John Moores University]\n[Liverpool, United Kingdom"
     st.markdown(f"""
         Developers:
 
