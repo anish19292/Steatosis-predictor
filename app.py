@@ -56,7 +56,7 @@ if mol:
     st.subheader("Molecule Structure")
     st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-    st.subheader("SMARTS Matching Results with Associated MIEs:")
+    st.subheader("Matched Structural Alerts with Associated MIEs:")
     results = []
     for smarts, mies in smarts_mie_mapping.items():
         pattern = Chem.MolFromSmarts(smarts)
