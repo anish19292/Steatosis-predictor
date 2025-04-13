@@ -76,16 +76,16 @@ with tab1:
 
 # Tab 2: Technical Info
 with tab2:
-    st.header("Technical Information")
+    st.header("About Steatosis Predictor")
     st.markdown(
         """
-        ### SMARTS Matching
-        This application uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns. 
+        ### Purpose
+        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns. 
 
-        SMARTS is a language for describing molecular patterns. The application checks if the molecule provided in SMILES format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs).
+        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs).
 
         ### Molecular Initiating Events (MIEs)
-        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis.
+        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. More information can be found here (10.1021/acs.chemrestox.5b00480)
 
         ### Libraries Used
         - **Streamlit:** For creating the interactive web application.
@@ -93,9 +93,7 @@ with tab2:
         - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
         """
     )
-    st.subheader("Disclaimer")
-    st.info("This application is for informational and research purposes only and should not be used for diagnostic or treatment decisions.")
-
+    
 # Tab 3: About Us/Contact
 with tab3:
     st.header("About Us")
