@@ -234,6 +234,6 @@ with tab1:
 with tab2:
     st.header("About Steatosis Predictor")
     st.markdown(
-        """
+        ""
         ### Purpose
         Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of ste
