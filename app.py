@@ -7,139 +7,112 @@ from rdkit.Chem import Lipinski
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
-        "MIEs": ["AhR"],
-        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
     },
     "c1nc2ccccc2s1": {
-        "MIEs": ["AhR"],
-        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
     },
     "c1c*o*1": {
-        "MIEs": ["AhR", "ER"],
-        "Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}
+        "AhR": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}},
+        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}}
     },
     "[#7,#6,#8,#16]1[#7,#6,#8,#16][#7,#6,#8,#16][#7,#6,#8,#16]([#7,#6,#8,#16]1)-c1ccccc1": {
-        "MIEs": ["AhR", "ER", "GR", "PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "AhR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
+        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}},
+        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
     },
     "[#8,#7,#6]~1~[#8,#7,#6]~[#8,#7,#6]~c2ccccc2~[#8,#7,#6]~1": {
-        "MIEs": ["AhR"],
-        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
     },
     "[#6]-[#7]-c1ccccc1-[#9,#17]": {
-        "MIEs": ["AhR"],
-        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
     },
     "*cS(=O)(=O)Nc*": {
-        "MIEs": ["FXR"],
-        "Domain": {"MW": (None, 900)}
+        "FXR": {"Domain": {"MW": (None, 900)}}
     },
     "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~[#8])~[#6]~[#6]~[#6]~2~1": {
-        "MIEs": ["FXR"],
-        "Domain": {"MW": (None, 900)}
+        "FXR": {"Domain": {"MW": (None, 900)}}
     },
     "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~*~*~*~*~*~[#8])~[#6]~[#6]~[#6]~2~1": {
-        "MIEs": ["FXR"],
-        "Domain": {"MW": (None, 900)}
+        "FXR": {"Domain": {"MW": (None, 900)}}
     },
     "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
-        "MIEs": ["GR", "PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "Cc1ccc(F)cc1C": {
-        "MIEs": ["GR"],
-        "Domain": {"HBD": (0, 15), "MW": (180, 610), "HBA": (0, 15), "XLogP": (-1, None)}
+        "GR": {"Domain": {"HBD": (0, 15), "MW": (180, 610), "HBA": (0, 15), "XLogP": (-1, None)}}
     },
     "[#6]~1~[#6]~[#6](~[#6]~[#6]~[#8,#6,#7,#16]~1)-[#6]-c1ccccc1": {
-        "MIEs": ["ER"],
-        "Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}
+        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}}
     },
     "*C#N": {
-        "MIEs": ["GR", "PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "[#6]~1~[#6]~[#6]~[#6]~[#6]~2~[#6]~3~[#6]~[#6]~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]12": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "c1ccccc1CC(F)(F)F": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaa1~*~*~*~*~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaa1~*~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaaa1~*~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaaa1~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaa1~*~*~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "a1aaaa1~*~*~c1ccccc1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "O~Ca1aaaa1": {
-        "MIEs": ["LXR"],
-        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
     },
     "C~1~C~C~C2~C(~C1)~C~C~C1~C~C~C~C~C~2~1": {
-        "MIEs": ["PPAR"],
-        "Domain": {"MW": (None, 800)}
+        "PPAR": {"Domain": {"MW": (None, 800)}}
     },
     "c1nc2cncnc2n1": {
-        "MIEs": ["PPAR"],
-        "Domain": {"MW": (None, 800)}
+        "PPAR": {"Domain": {"MW": (None, 800)}}
     },
     "a(a)a~*~*~a(a)a": {
-        "MIEs": ["PPAR"],
-        "Domain": {"MW": (None, 800)}
+        "PPAR": {"Domain": {"MW": (None, 800)}}
     },
     "*~[#6]~*~[#6]~*~[#6]~*~[#6]a1a([O,Cl,F,I,Br,N*])aaaa1": {
-        "MIEs": ["PPAR"],
-        "Domain": {"MW": (None, 800)}
+        "PPAR": {"Domain": {"MW": (None, 800)}}
     },
     "[#6]~*~[#6]~*~[#6]~*~[#6]~*~a1a([O,Cl,F,I,Br,N*])aaaa1": {
-        "MIEs": ["PPAR"],
-        "Domain": {"MW": (None, 800)}
+        "PPAR": {"Domain": {"MW": (None, 800)}}
     },
     "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
-        "MIEs": ["PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "O~[#6]1~[#6]~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]~[#6]~[#6]~23)~[#6]~1": {
-        "MIEs": ["PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "[#8,#6,#7,#16]~1~[#8,#6,#7,#16]~[#8,#6,#7,#16]~[#6](~[#8,#6,#7,#16]~[#8,#6,#7,#16]~1)-[#7,#8,#6,#16]-c1ccccc1": {
-        "MIEs": ["PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "*C#N": {
-        "MIEs": ["GR", "PXR"],
-        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
+        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
     },
     "O~[#6]~[#6]~[#7]~[#6]": {
-        "MIEs": ["RAR"],
-        "Domain": {"MW": (None, 550)}
+        "RAR": {"Domain": {"MW": (None, 550)}}
     },
     "*[#6](~[#8])~[#6](~[#8])*": {
-        "MIEs": ["RAR"],
-        "Domain": {"MW": (None, 550)}
+        "RAR": {"Domain": {"MW": (None, 550)}}
     },
 }
-
 # Create tabs
 tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
 
