@@ -158,7 +158,16 @@ with tab1:
                         for prop, (min_val, max_val) in domain.items():
                             lower = f"$\ge {min_val}$" if min_val is not None else "No Lower Limit"
                             upper = f"$\le {max_val}$" if max_val is not None else "No Upper Limit"
-                            domain_strings.append(f"{prop}: [{lower}, {upper}]")
+                            if lower == "No Lower Limit":
+                                if upper == "No Upper Limit":
+                                    domain_strings.append(f"{prop}: No Limit")
+                                else:
+                                    domain_strings.append(f"{prop}: $\le {upper}$")
+                            else:
+                                if upper == "No Upper Limit":
+                                    domain_strings.append(f"{prop}: $\ge {lower}$")
+                                else:
+                                    domain_strings.append(f"{prop}: [${lower}$, ${upper}$]")
                         formatted_domain = ", ".join(domain_strings)
 
                         for prop, (min_val, max_val) in domain.items():
