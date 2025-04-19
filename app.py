@@ -206,7 +206,25 @@ with tab1:
                     results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": "Not Available", "Within Domain": "N/A", "Domain Check": "N/A"})
 
         if results:
-            st.dataframe(results)
+            # Format the 'Domain' and 'Domain Check' columns for better readability
+            formatted_results = []
+            for res in results:
+                formatted_domain = "Not Available"
+                if res["Domain"] and res["Domain"] != "Not Available":
+                    formatted_domain = ", ".join([f"{k}: [{v[0] if v[0] is not None else '-∞'}, {v[1] if v[1] is not None else '∞'}]" for k, v in res["Domain"].items()])
+
+                formatted_domain_check = "N/A"
+                if res["Domain Check"] != "N/A":
+                    formatted_domain_check = ", ".join([f"{k}: {v[0]} ({v[1]})" for k, v in res["Domain Check"].items()])
+
+                formatted_results.append({
+                    "SMARTS": res["SMARTS"],
+                    "MIE(s)": res["MIE(s)"],
+                    "Domain": formatted_domain,
+                    "Within Domain": "Yes" if res["Within Domain"] is True else ("No" if res["Within Domain"] is False else "N/A"),
+                    "Domain Check": formatted_domain_check,
+                })
+            st.dataframe(formatted_results)
         else:
             st.info("No matching SMARTS found for the given molecule.")
     else:
@@ -218,21 +236,4 @@ with tab2:
     st.markdown(
         """
         ### Purpose
-        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns.
-
-        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs). It also assesses if the input molecule falls within the defined chemical property domain for each identified alert.
-
-        ### Molecular Initiating Events (MIEs)
-        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. More information can be found here (10.1021/acs.chemrestox.5b00480)
-
-        ### Libraries Used
-        - **Streamlit:** For creating the interactive web application.
-        - **RDKit:** For chemical informatics tasks, including SMILES parsing and SMARTS matching, and descriptor calculation.
-        - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
-        """
-    )
-
-# Tab 3: Contact
-with tab3:
-    st.header("About Us")
-    developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
+        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of ste
