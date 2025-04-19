@@ -154,15 +154,22 @@ with tab1:
 
                     if domain:
                         domain_strings = []
-                        for prop, (min_max) in domain.items():
-                            min_val, max_val = min_max
-                            lower_bound = f">= {min_val}" if min_val is not None else "No Lower Limit"
-                            upper_bound = f"<= {max_val}" if max_val is not None else "No Upper Limit"
-                            domain_strings.append(f"{prop}: [{lower_bound}, {upper_bound}]")
+                        for prop, (min_val, max_val) in domain.items():
+                            lower_bound = f">= {min_val}" if min_val is not None else ""
+                            upper_bound = f"<= {max_val}" if max_val is not None else ""
+                            range_str = ""
+                            if lower_bound and upper_bound:
+                                range_str = f"[{lower_bound}, {upper_bound}]"
+                            elif lower_bound:
+                                range_str = f"[{lower_bound}, ]"
+                            elif upper_bound:
+                                range_str = f"[ , {upper_bound}]"
+                            else:
+                                range_str = "No Limit"
+                            domain_strings.append(f"{prop}: {range_str}")
                         formatted_domain = ", ".join(domain_strings)
 
-                        for prop, (min_max) in domain.items():
-                            min_val, max_val = min_max
+                        for prop, (min_val, max_val) in domain.items():
                             mol_prop_value = None
                             if prop == "MW":
                                 mol_prop_value = mw
