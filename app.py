@@ -146,7 +146,7 @@ tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
 # Tab 1: Predictor
 with tab1:
     st.title("Steatosis Predictor")
-    st.write("Enter a SMILES string to check for steatosis structural alerts and associated Molecular Initiating Events (MIEs).")
+    st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs). The app will also assess if the molecule's properties fall within the defined chemical domain for each alert.")
 
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
@@ -170,7 +170,7 @@ with tab1:
         hbd = Lipinski.NumHDonors(mol)
         hba = Lipinski.NumHAcceptors(mol)
 
-        st.subheader("SMARTS Matching Results with Associated MIEs and Domain Check:")
+        st.subheader("Structural Alert Analysis:")
         results = []
         for smarts, data in smarts_mie_mapping.items():
             pattern = Chem.MolFromSmarts(smarts)
@@ -206,7 +206,7 @@ with tab1:
                     results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": "Not Available", "Within Domain": "N/A", "Domain Check": "N/A"})
 
         if results:
-            # Format the 'Domain' and 'Domain Check' columns for better readability
+            st.subheader("Matching Alerts and Domain Check:")
             formatted_results = []
             for res in results:
                 formatted_domain = "Not Available"
@@ -226,9 +226,9 @@ with tab1:
                 })
             st.dataframe(formatted_results)
         else:
-            st.info("No matching SMARTS found for the given molecule.")
+            st.info("No matching structural alerts found for the given molecule.")
     else:
-        st.info("Please enter a SMILES string.")
+        st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
 with tab2:
