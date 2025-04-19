@@ -177,10 +177,11 @@ with tab1:
             if mol.HasSubstructMatch(pattern):
                 mies = data["MIEs"]
                 domain = data.get("Domain")
-                domain_check = {}
+                within_domain = True
+                formatted_domain = "Not Available"
 
                 if domain:
-                    within_domain = True
+                    formatted_domain = ", ".join([f"{k}: [{v[0] if v[0] is not None else '-∞'}, {v[1] if v[1] is not None else '∞'}]" for k, v in domain.items()])
                     for prop, (min_val, max_val) in domain.items():
                         mol_prop_value = None
                         if prop == "MW":
@@ -195,41 +196,33 @@ with tab1:
                         if mol_prop_value is not None:
                             lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
                             upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
-                            domain_check[prop] = (lower_bound_met and upper_bound_met, f"[{min_val if min_val is not None else '-∞'}, {max_val if max_val is not None else '∞'}]")
                             if not (lower_bound_met and upper_bound_met):
                                 within_domain = False
                         else:
-                            domain_check[prop] = (False, "Property not calculated")
                             within_domain = False
-                    results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": domain, "Within Domain": within_domain, "Domain Check": domain_check})
-                else:
-                    results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": "Not Available", "Within Domain": "N/A", "Domain Check": "N/A"})
+
+                results.append({
+                    "SMARTS": smarts,
+                    "MIE(s)": ", ".join(mies),
+                    "Domain": formatted_domain if domain else "Not Available",
+                    "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
+                })
 
         if results:
             st.subheader("Matching Alerts and Domain Check:")
             formatted_results = []
             for res in results:
-                formatted_domain = "Not Available"
-                if res["Domain"] and res["Domain"] != "Not Available":
-                    formatted_domain = ", ".join([f"{k}: [{v[0] if v[0] is not None else '-∞'}, {v[1] if v[1] is not None else '∞'}]" for k, v in res["Domain"].items()])
-
-                formatted_domain_check = "N/A"
-                if res["Domain Check"] != "N/A":
-                    formatted_domain_check = ", ".join([f"{k}: {v[0]} ({v[1]})" for k, v in res["Domain Check"].items()])
-
                 formatted_results.append({
                     "SMARTS": res["SMARTS"],
                     "MIE(s)": res["MIE(s)"],
-                    "Domain": formatted_domain,
-                    "Within Domain": "Yes" if res["Within Domain"] is True else ("No" if res["Within Domain"] is False else "N/A"),
-                    "Domain Check": formatted_domain_check,
+                    "Domain": res["Domain"],
+                    "Within Domain": res["Within Domain"],
                 })
             st.dataframe(formatted_results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
     else:
         st.info("Please enter a valid SMILES string.")
-
 # Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
