@@ -1,39 +1,143 @@
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
+from rdkit.Chem import Descriptors
+from rdkit.Chem import Lipinski
 
-# Define SMARTS patterns and their associated MIEs
+# Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
-    "C(=C\\c1ccccc1)\c1ccccc1": ["AhR"],
-    "c1nc2ccccc2s1": ["AhR"],
-    "c1c*o*1": ["AhR", "ER"],
-    "[#7,#6,#8,#16]1[#7,#6,#8,#16][#7,#6,#8,#16][#7,#6,#8,#16]([#7,#6,#8,#16]1)-c1ccccc1": ["AhR", "ER", "GR", "PXR"],
-    "[#8,#7,#6]~1~[#8,#7,#6]~[#8,#7,#6]~c2ccccc2~[#8,#7,#6]~1": ["AhR"],
-    "[#6]-[#7]-c1ccccc1-[#9,#17]": ["AhR"],
-    "*cS(=O)(=O)Nc*": ["FXR"],
-    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~[#8])~[#6]~[#6]~[#6]~2~1": ["FXR"],
-    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~*~*~*~*~*~[#8])~[#6]~[#6]~[#6]~2~1": ["FXR"],
-    "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": ["GR", "PXR"],
-    "Cc1ccc(F)cc1C": ["GR"],
-    "*C#N": ["GR", "PXR"],
-    "[#6]~1~[#6]~[#6]~[#6]~[#6]~2~[#6]~3~[#6]~[#6]~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]12": ["LXR"],
-    "c1ccccc1CC(F)(F)F": ["LXR"],
-    "a1aaaa1~*~*~*~*~*~*~c1ccccc1": ["LXR"],
-    "a1aaaa1~*~*~*~c1ccccc1": ["LXR"],
-    "a1aaaaa1~*~*~*~c1ccccc1": ["LXR"],
-    "a1aaaaa1~*~*~c1ccccc1": ["LXR"],
-    "a1aaaa1~*~*~*~*~c1ccccc1": ["LXR"],
-    "a1aaaa1~*~*~c1ccccc1": ["LXR"],
-    "O~Ca1aaaa1": ["LXR"],
-    "C~1~C~C~C2~C(~C1)~C~C~C1~C~C~C~C~C~2~1": ["PPAR"],
-    "c1nc2cncnc2n1": ["PPAR"],
-    "a(a)a~*~*~a(a)a": ["PPAR"],
-    "*~[#6]~*~[#6]~*~[#6]~*~[#6]a1a([O,Cl,F,I,Br,N*])aaaa1": ["PPAR"],
-    "[#6]~*~[#6]~*~[#6]~*~[#6]~*~a1a([O,Cl,F,I,Br,N*])aaaa1": ["PPAR"],
-    "O~[#6]1~[#6]~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]~[#6]~[#6]~23)~[#6]~1": ["PXR"],
-    "[#8,#6,#7,#16]~1~[#8,#6,#7,#16]~[#8,#6,#7,#16]~[#6](~[#8,#6,#7,#16]~[#8,#6,#7,#16]~1)-[#7,#8,#6,#16]-c1ccccc1": ["PXR"],
-    "O~[#6]~[#6]~[#7]~[#6]": ["RAR"],
-    "*[#6](~[#8])~[#6](~[#8])*": ["RAR"],
+    "C(=C\\c1ccccc1)\c1ccccc1": {
+        "MIEs": ["AhR"],
+        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+    },
+    "c1nc2ccccc2s1": {
+        "MIEs": ["AhR"],
+        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+    },
+    "c1c*o*1": {
+        "MIEs": ["AhR", "ER"],
+        "Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}
+    },
+    "[#7,#6,#8,#16]1[#7,#6,#8,#16][#7,#6,#8,#16][#7,#6,#8,#16]([#7,#6,#8,#16]1)-c1ccccc1": {
+        "MIEs": ["AhR", "ER", "GR", "PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "[#8,#7,#6]~1~[#8,#7,#6]~[#8,#7,#6]~c2ccccc2~[#8,#7,#6]~1": {
+        "MIEs": ["AhR"],
+        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+    },
+    "[#6]-[#7]-c1ccccc1-[#9,#17]": {
+        "MIEs": ["AhR"],
+        "Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}
+    },
+    "*cS(=O)(=O)Nc*": {
+        "MIEs": ["FXR"],
+        "Domain": {"MW": (None, 900)}
+    },
+    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~[#8])~[#6]~[#6]~[#6]~2~1": {
+        "MIEs": ["FXR"],
+        "Domain": {"MW": (None, 900)}
+    },
+    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~*~*~*~*~*~[#8])~[#6]~[#6]~[#6]~2~1": {
+        "MIEs": ["FXR"],
+        "Domain": {"MW": (None, 900)}
+    },
+    "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
+        "MIEs": ["GR", "PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "Cc1ccc(F)cc1C": {
+        "MIEs": ["GR"],
+        "Domain": {"HBD": (0, 15), "MW": (180, 610), "HBA": (0, 15), "XLogP": (-1, None)}
+    },
+    "[#6]~1~[#6]~[#6](~[#6]~[#6]~[#8,#6,#7,#16]~1)-[#6]-c1ccccc1": {
+        "MIEs": ["ER"],
+        "Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}
+    },
+    "*C#N": {
+        "MIEs": ["GR", "PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "[#6]~1~[#6]~[#6]~[#6]~[#6]~2~[#6]~3~[#6]~[#6]~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]12": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "c1ccccc1CC(F)(F)F": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaa1~*~*~*~*~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaa1~*~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaaa1~*~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaaa1~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaa1~*~*~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "a1aaaa1~*~*~c1ccccc1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "O~Ca1aaaa1": {
+        "MIEs": ["LXR"],
+        "Domain": {"MW": (None, 750), "XLogP": (2, None)}
+    },
+    "C~1~C~C~C2~C(~C1)~C~C~C1~C~C~C~C~C~2~1": {
+        "MIEs": ["PPAR"],
+        "Domain": {"MW": (None, 800)}
+    },
+    "c1nc2cncnc2n1": {
+        "MIEs": ["PPAR"],
+        "Domain": {"MW": (None, 800)}
+    },
+    "a(a)a~*~*~a(a)a": {
+        "MIEs": ["PPAR"],
+        "Domain": {"MW": (None, 800)}
+    },
+    "*~[#6]~*~[#6]~*~[#6]~*~[#6]a1a([O,Cl,F,I,Br,N*])aaaa1": {
+        "MIEs": ["PPAR"],
+        "Domain": {"MW": (None, 800)}
+    },
+    "[#6]~*~[#6]~*~[#6]~*~[#6]~*~a1a([O,Cl,F,I,Br,N*])aaaa1": {
+        "MIEs": ["PPAR"],
+        "Domain": {"MW": (None, 800)}
+    },
+    "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
+        "MIEs": ["PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "O~[#6]1~[#6]~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]~[#6]~[#6]~23)~[#6]~1": {
+        "MIEs": ["PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "[#8,#6,#7,#16]~1~[#8,#6,#7,#16]~[#8,#6,#7,#16]~[#6](~[#8,#6,#7,#16]~[#8,#6,#7,#16]~1)-[#7,#8,#6,#16]-c1ccccc1": {
+        "MIEs": ["PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "*C#N": {
+        "MIEs": ["GR", "PXR"],
+        "Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}
+    },
+    "O~[#6]~[#6]~[#7]~[#6]": {
+        "MIEs": ["RAR"],
+        "Domain": {"MW": (None, 550)}
+    },
+    "*[#6](~[#8])~[#6](~[#8])*": {
+        "MIEs": ["RAR"],
+        "Domain": {"MW": (None, 550)}
+    },
 }
 
 # Create tabs
@@ -55,17 +159,51 @@ with tab1:
         except:
             st.error("Invalid SMILES input.")
 
-    # Display molecule and SMARTS matches with MIEs
+    # Display molecule and SMARTS matches with MIEs and domain check
     if mol:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        st.subheader("SMARTS Matching Results with Associated MIEs:")
+        # Calculate properties for domain check
+        mw = Descriptors.MolWt(mol)
+        logp = Descriptors.MolLogP(mol)
+        hbd = Lipinski.NumHDonors(mol)
+        hba = Lipinski.NumHAcceptors(mol)
+
+        st.subheader("SMARTS Matching Results with Associated MIEs and Domain Check:")
         results = []
-        for smarts, mies in smarts_mie_mapping.items():
+        for smarts, data in smarts_mie_mapping.items():
             pattern = Chem.MolFromSmarts(smarts)
             if mol.HasSubstructMatch(pattern):
-                results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies)})
+                mies = data["MIEs"]
+                domain = data.get("Domain")
+                domain_check = {}
+
+                if domain:
+                    within_domain = True
+                    for prop, (min_val, max_val) in domain.items():
+                        mol_prop_value = None
+                        if prop == "MW":
+                            mol_prop_value = mw
+                        elif prop == "XLogP":
+                            mol_prop_value = logp
+                        elif prop == "HBD":
+                            mol_prop_value = hbd
+                        elif prop == "HBA":
+                            mol_prop_value = hba
+
+                        if mol_prop_value is not None:
+                            lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
+                            upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
+                            domain_check[prop] = (lower_bound_met and upper_bound_met, f"[{min_val if min_val is not None else '-∞'}, {max_val if max_val is not None else '∞'}]")
+                            if not (lower_bound_met and upper_bound_met):
+                                within_domain = False
+                        else:
+                            domain_check[prop] = (False, "Property not calculated")
+                            within_domain = False
+                    results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": domain, "Within Domain": within_domain, "Domain Check": domain_check})
+                else:
+                    results.append({"SMARTS": smarts, "MIE(s)": ", ".join(mies), "Domain": "Not Available", "Within Domain": "N/A", "Domain Check": "N/A"})
 
         if results:
             st.dataframe(results)
@@ -82,14 +220,14 @@ with tab2:
         ### Purpose
         Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns.
 
-        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs).
+        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs). It also assesses if the input molecule falls within the defined chemical property domain for each identified alert.
 
         ### Molecular Initiating Events (MIEs)
         The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. More information can be found here (10.1021/acs.chemrestox.5b00480)
 
         ### Libraries Used
         - **Streamlit:** For creating the interactive web application.
-        - **RDKit:** For chemical informatics tasks, including SMILES parsing and SMARTS matching.
+        - **RDKit:** For chemical informatics tasks, including SMILES parsing and SMARTS matching, and descriptor calculation.
         - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
         """
     )
@@ -98,18 +236,3 @@ with tab2:
 with tab3:
     st.header("About Us")
     developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
-    affiliation = "School of Pharmacy and Biomolecular Sciences, Liverpool John Moores University]\n[Liverpool, United Kingdom"
-    st.markdown(f"""
-        Developers:
-
-        {", ".join(developers)}
-        {affiliation}
-
-        ### Contact Us
-        For any inquiries, feedback, or collaborations, please feel free to reach out:
-
-        - **Email:** [Your Email Address(es)]
-        - **LinkedIn:** [Your LinkedIn Profile URL(s) (Optional)]
-        - **GitHub:** [Your GitHub Repository URL(s) (Optional)]
-        """
-    )
