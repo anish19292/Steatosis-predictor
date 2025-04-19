@@ -119,7 +119,7 @@ tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
 # Tab 1: Predictor
 with tab1:
     st.title("Steatosis Predictor")
-    st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs). The app will also assess if the molecule's properties fall within the defined chemical domain for each alert.")
+    st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs) with MIE-specific chemical property domain assessment.")
 
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
@@ -143,72 +143,53 @@ with tab1:
         hbd = Lipinski.NumHDonors(mol)
         hba = Lipinski.NumHAcceptors(mol)
 
-        st.subheader("Structural Alert Analysis:")
+        st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
         results = []
-        for smarts, data in smarts_mie_mapping.items():
+        for smarts, mie_data in smarts_mie_mapping.items():
             pattern = Chem.MolFromSmarts(smarts)
             if mol.HasSubstructMatch(pattern):
-                mies = data["MIEs"]
-                domain = data.get("Domain")
-                within_domain = True
-                formatted_domain = "Not Available"
+                for mie, data in mie_data.items():
+                    domain = data.get("Domain")
+                    within_domain = True
+                    formatted_domain = "Not Available"
 
-                if domain:
-                    domain_strings = []
-                    for prop, (min_val, max_val) in domain.items():
-                        lower_bound = ""
-                        upper_bound = ""
-                        if min_val is not None and max_val is not None:
-                            lower_bound = f"≥ {min_val}"
-                            upper_bound = f"≤ {max_val}"
-                            domain_strings.append(f"{prop}: {lower_bound}, {upper_bound}")
-                        elif min_val is not None:
-                            lower_bound = f"≥ {min_val}"
-                            domain_strings.append(f"{prop}: {lower_bound}")
-                        elif max_val is not None:
-                            upper_bound = f"≤ {max_val}"
-                            domain_strings.append(f"{prop}: {upper_bound}")
-                        else:
-                            domain_strings.append(f"{prop}: No Limit Specified")
-                    formatted_domain = ", ".join(domain_strings)
+                    if domain:
+                        domain_strings = []
+                        for prop, (min_val, max_val) in domain.items():
+                            lower = f"{min_val}" if min_val is not None else "No Lower Limit"
+                            upper = f"{max_val}" if max_val is not None else "No Upper Limit"
+                            domain_strings.append(f"{prop}: [{lower}, {upper}]")
+                        formatted_domain = ", ".join(domain_strings)
 
-                    for prop, (min_val, max_val) in domain.items():
-                        mol_prop_value = None
-                        if prop == "MW":
-                            mol_prop_value = mw
-                        elif prop == "XLogP":
-                            mol_prop_value = logp
-                        elif prop == "HBD":
-                            mol_prop_value = hbd
-                        elif prop == "HBA":
-                            mol_prop_value = hba
+                        for prop, (min_val, max_val) in domain.items():
+                            mol_prop_value = None
+                            if prop == "MW":
+                                mol_prop_value = mw
+                            elif prop == "XLogP":
+                                mol_prop_value = logp
+                            elif prop == "HBD":
+                                mol_prop_value = hbd
+                            elif prop == "HBA":
+                                mol_prop_value = hba
 
-                        if mol_prop_value is not None:
-                            lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
-                            upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
-                            if not (lower_bound_met and upper_bound_met):
+                            if mol_prop_value is not None:
+                                lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
+                                upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
+                                if not (lower_bound_met and upper_bound_met):
+                                    within_domain = False
+                            else:
                                 within_domain = False
-                        else:
-                            within_domain = False
 
-                results.append({
-                    "SMARTS": smarts,
-                    "MIE(s)": ", ".join(mies),
-                    "Domain": formatted_domain if domain else "Not Available",
-                    "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
-                })
+                    results.append({
+                        "SMARTS": smarts,
+                        "MIE": mie,
+                        "Domain": formatted_domain if domain else "Not Available",
+                        "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
+                    })
 
         if results:
-            st.subheader("Matching Alerts and Domain Check:")
-            formatted_results = []
-            for res in results:
-                formatted_results.append({
-                    "SMARTS": res["SMARTS"],
-                    "MIE(s)": res["MIE(s)"],
-                    "Domain": res["Domain"],
-                    "Within Domain": res["Within Domain"],
-                })
-            st.dataframe(formatted_results)
+            st.subheader("Matching Alerts and MIE-Specific Domain Check:")
+            st.dataframe(results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
     else:
