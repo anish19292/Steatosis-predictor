@@ -181,7 +181,24 @@ with tab1:
                 formatted_domain = "Not Available"
 
                 if domain:
-                    formatted_domain = ", ".join([f"{k}: [{v[0] if v[0] is not None else '-∞'}, {v[1] if v[1] is not None else '∞'}]" for k, v in domain.items()])
+                    domain_strings = []
+                    for prop, (min_val, max_val) in domain.items():
+                        lower_bound = ""
+                        upper_bound = ""
+                        if min_val is not None and max_val is not None:
+                            lower_bound = f"≥ {min_val}"
+                            upper_bound = f"≤ {max_val}"
+                            domain_strings.append(f"{prop}: {lower_bound}, {upper_bound}")
+                        elif min_val is not None:
+                            lower_bound = f"≥ {min_val}"
+                            domain_strings.append(f"{prop}: {lower_bound}")
+                        elif max_val is not None:
+                            upper_bound = f"≤ {max_val}"
+                            domain_strings.append(f"{prop}: {upper_bound}")
+                        else:
+                            domain_strings.append(f"{prop}: No Limit Specified")
+                    formatted_domain = ", ".join(domain_strings)
+
                     for prop, (min_val, max_val) in domain.items():
                         mol_prop_value = None
                         if prop == "MW":
