@@ -134,7 +134,8 @@ with tab1:
     # Display molecule and SMARTS matches with MIEs and domain check
     if mol:
         st.subheader("Molecule Structure")
-        st.image(Draw.MolToImage(mol, size=(300, 300)))
+        img = Draw.MolToImage(mol, size=(600, 600), dpi=300)  # Increased size and DPI
+        st.image(img)
 
         # Calculate properties for domain check
         mw = Descriptors.MolWt(mol)
