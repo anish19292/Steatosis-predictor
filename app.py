@@ -161,9 +161,9 @@ with tab1:
                             if lower_bound and upper_bound:
                                 range_str = f"[{lower_bound}, {upper_bound}]"
                             elif lower_bound:
-                                range_str = f"[{lower_bound}, ]"
+                                range_str = f"[{lower_bound}]"
                             elif upper_bound:
-                                range_str = f"[ , {upper_bound}]"
+                                range_str = f"[{upper_bound}]"
                             else:
                                 range_str = "No Limit"
                             domain_strings.append(f"{prop}: {range_str}")
