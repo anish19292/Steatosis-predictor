@@ -236,4 +236,22 @@ with tab2:
     st.markdown(
         """
         ### Purpose
-        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of ste
+        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns and a binary QSAR model to predict likelihood of steatosis uses the **RDKit** library, a powerful cheminformatics toolkit, to perform substructure searching based on **SMARTS (Simplified Molecular Input Line Entry System)** patterns.
+
+        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs). It also assesses if the input molecule falls within the defined chemical property domain for each identified alert.
+
+        ### Molecular Initiating Events (MIEs)
+        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. More information can be found here (10.1021/acs.chemrestox.5b00480)
+
+        ### Libraries Used
+        - **Streamlit:** For creating the interactive web application.
+        - **RDKit:** For chemical informatics tasks, including SMILES parsing and SMARTS matching, and descriptor calculation.
+        - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
+        """
+    )
+
+# Tab 3: Contact
+with tab3:
+    st.header("About Us")
+    developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
+    st.write("Developed by:", ", ".join(developers))
