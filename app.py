@@ -4,6 +4,7 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import joblib
+from rdkit.Chem import Draw
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
