@@ -1,5 +1,9 @@
 import sys
-print(f"Python executable being used: {sys.executable}")
+import streamlit as st
+
+st.text(f"Python executable being used: {sys.executable}")
+
+# ... rest of your Streamlit app code ...
 
 import streamlit as st
 from rdkit import Chem
