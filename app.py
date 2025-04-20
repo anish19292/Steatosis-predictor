@@ -111,6 +111,7 @@ smarts_mie_mapping = {
         "RAR": {"Domain": {"MW": (None, 550)}}
     },
 }
+
 # Create tabs
 tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
 # Tab 1: Predictor
@@ -121,6 +122,24 @@ with tab1:
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
 
+    def compute_fingerprints(mol):
+        fingerprints = {}
+
+        # RDKit fingerprints with varying lengths
+        for size in [93, 204, 292, 405, 690, 718, 926]:
+            fp = RDKFingerprint(mol, fpSize=size)
+            fingerprints[f"RDKit_fp_{size}"] = list(fp)
+
+        # Layered fingerprint
+        layered_fp = LayeredFingerprint(mol, fpSize=109)
+        fingerprints["Layered_fp_109"] = list(layered_fp)
+
+        # Pattern fingerprint (truncate to 779 bits)
+        pattern_fp = PatternFingerprint(mol)
+        fingerprints["Pattern_fp_779"] = list(pattern_fp)[:779]
+
+        return fingerprints
+
     # Convert SMILES to RDKit Mol
     mol = None
     if smiles_input:
@@ -129,12 +148,19 @@ with tab1:
         except:
             st.error("Invalid SMILES input.")
 
-    # Display molecule and SMARTS matches with MIEs and domain check
     if mol:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        # Calculate properties for domain check
+        # Calculate and display fingerprints
+        st.subheader("RDKit Fingerprints")
+        fingerprints = compute_fingerprints(mol)
+
+        for name, bits in fingerprints.items():
+            st.markdown(f"**{name}**")
+            st.text(f"{bits}")
+
+        # Property-based domain analysis
         mw = Descriptors.MolWt(mol)
         logp = Descriptors.MolLogP(mol)
         hbd = Lipinski.NumHDonors(mol)
