@@ -143,10 +143,6 @@ with tab1:
 
         return fingerprints
 
-    # Load the classifier model using pickle
-    with open('classifier.pkl', 'rb') as model_file:
-        model = pickle.load(model_file)
-
     # Convert SMILES to RDKit Mol
     mol = None
     if smiles_input:
@@ -167,19 +163,6 @@ with tab1:
         for size in [93, 204, 292, 405, 690, 718, 926, 109, 779]:
             fp_key = f"RDKit_fp_{size}" if size != 109 and size != 779 else f"Layered_fp_109" if size == 109 else f"Pattern_fp_779"
             fingerprint_features.extend(fingerprints[fp_key])
-
-        # Convert the list of fingerprints into a numpy array
-        fingerprint_array = np.array(fingerprint_features).reshape(1, -1)
-
-        # Make the prediction using the classifier
-        prediction = model.predict(fingerprint_array)
-
-        # Display prediction result
-        st.subheader("Prediction Result:")
-        if prediction[0] == 1:
-            st.success("The molecule is predicted to cause steatosis.")
-        else:
-            st.success("The molecule is predicted NOT to cause steatosis.")
 
         # Property-based domain analysis
         mw = Descriptors.MolWt(mol)
