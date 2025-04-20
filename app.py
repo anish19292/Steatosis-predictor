@@ -4,6 +4,8 @@ from rdkit.Chem import Draw
 from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
+import pickle
+import numpy as np
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
