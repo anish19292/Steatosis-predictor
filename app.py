@@ -1,3 +1,6 @@
+import sys
+print(f"Python executable being used: {sys.executable}")
+
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
