@@ -1,10 +1,8 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 from rdkit import Chem
-from rdkit.Chem import AllChem
-import joblib
 from rdkit.Chem import Draw
+from rdkit.Chem import Descriptors
+from rdkit.Chem import Lipinski
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
@@ -117,6 +115,7 @@ smarts_mie_mapping = {
 }
 # Create tabs
 tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
+# Tab 1: Predictor
 with tab1:
     st.title("Steatosis Predictor")
     st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs) with MIE-specific chemical property domain assessment.")
@@ -135,47 +134,13 @@ with tab1:
     # Display molecule and SMARTS matches with MIEs and domain check
     if mol:
         st.subheader("Molecule Structure")
-        img = Draw.MolToImage(mol, size=(600, 600), dpi=300)  # Very high resolution
-        st.image(img, width=300)  # Display at a smaller width
+        st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        # Calculate the specific fingerprints used by your model
-        from rdkit.Chem.rdMolDescriptors import RDKFingerprint
-        from rdkit.Chem.rdChemReactions import LayeredFingerprint
-        from rdkit.Chem import PatternFingerprint
-        import numpy as np
-        import pickle
-
-        rdkfp93 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[93]
-        rdkfp204 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[204]
-        rdkfp292 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[292]
-        rdkfp405 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[405]
-        rdkfp690 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[690]
-        rdkfp718 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[718]
-        rdkfp926 = RDKFingerprint(mol, bitInfo=None, nBits=1024)[926]
-
-        layeredfp109 = LayeredFingerprint(mol)[109]
-
-        patternfp779 = PatternFingerprint(mol)[779]
-
-        descriptor_vector = np.array([rdkfp93, rdkfp204, rdkfp292, rdkfp405, rdkfp690, rdkfp718, rdkfp926, layeredfp109, patternfp779]).reshape(1, -1)
-
-        # Load and use the QSAR model
-        try:
-            with open('classifier.pkl', 'rb') as f:
-                qsar_model = pickle.load(f)
-
-            prediction = qsar_model.predict(descriptor_vector)[0]
-
-            st.subheader("QSAR Model Prediction:")
-            if prediction == 1:
-                st.warning("Potential Steatosis Risk Identified by QSAR Model.")
-            else:
-                st.success("No Significant Steatosis Risk Identified by QSAR Model (based on QSAR).")
-
-        except FileNotFoundError:
-            st.error("QSAR model file 'classifier.pkl' not found in the current directory.")
-        except Exception as e:
-            st.error(f"Error loading or using the QSAR model: {e}")
+        # Calculate properties for domain check
+        mw = Descriptors.MolWt(mol)
+        logp = Descriptors.MolLogP(mol)
+        hbd = Lipinski.NumHDonors(mol)
+        hba = Lipinski.NumHAcceptors(mol)
 
         st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
         results = []
@@ -204,22 +169,16 @@ with tab1:
                             domain_strings.append(f"{prop}: {range_str}")
                         formatted_domain = ", ".join(domain_strings)
 
-                        # Calculate properties for domain check (retained for domain check)
-                        mw_domain = Descriptors.MolWt(mol)
-                        logp_domain = Descriptors.MolLogP(mol)
-                        hbd_domain = Lipinski.NumHDonors(mol)
-                        hba_domain = Lipinski.NumHAcceptors(mol)
-
                         for prop, (min_val, max_val) in domain.items():
                             mol_prop_value = None
                             if prop == "MW":
-                                mol_prop_value = mw_domain
+                                mol_prop_value = mw
                             elif prop == "XLogP":
-                                mol_prop_value = logp_domain
+                                mol_prop_value = logp
                             elif prop == "HBD":
-                                mol_prop_value = hbd_domain
+                                mol_prop_value = hbd
                             elif prop == "HBA":
-                                mol_prop_value = hba_domain
+                                mol_prop_value = hba
 
                             if mol_prop_value is not None:
                                 lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
