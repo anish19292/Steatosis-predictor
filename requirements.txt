@@ -1,5 +1,5 @@
 streamlit==1.15.0
-rdkit-pypi>=2023.03.1  # Or a version that installed successfully for you
+rdkit-pypi==2022.9.5
 padelpy==0.1.14
 pandas>=1.5.0
 altair>=4.0.0,<5.0.0
