@@ -1,8 +1,8 @@
 streamlit==1.15.0
-rdkit-pypi>=2021.09.1  # Explicitly specify a minimum version
+rdkit-pypi>=2023.03.1  # Or a version that installed successfully for you
 padelpy==0.1.14
 pandas>=1.5.0
 altair>=4.0.0,<5.0.0
 plotly
-numpy
+numpy<2.0  # Explicitly downgrade NumPy
 Pillow
