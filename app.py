@@ -122,6 +122,7 @@ with tab1:
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
 
+    # Function to compute fingerprints silently
     def compute_fingerprints(mol):
         fingerprints = {}
 
@@ -152,13 +153,8 @@ with tab1:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        # Calculate and display fingerprints
-        st.subheader("RDKit Fingerprints")
+        # Calculate fingerprints silently (not displayed)
         fingerprints = compute_fingerprints(mol)
-
-        for name, bits in fingerprints.items():
-            st.markdown(f"**{name}**")
-            st.text(f"{bits}")
 
         # Property-based domain analysis
         mw = Descriptors.MolWt(mol)
