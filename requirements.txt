@@ -4,5 +4,5 @@ padelpy==0.1.14
 pandas>=1.5.0
 altair>=4.0.0,<5.0.0
 plotly
-numpy<2.0  # Explicitly downgrade NumPy
+numpy
 Pillow
