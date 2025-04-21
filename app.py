@@ -13,6 +13,9 @@ import joblib
 def load_model():
     return joblib.load('classifier.pkl')
 
+# Load the model and make predictions
+model = load_model()
+
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
