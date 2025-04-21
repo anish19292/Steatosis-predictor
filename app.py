@@ -7,10 +7,11 @@ from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, P
 import pickle
 import numpy as np
 
-def load_classifier():
-    with open("classifier.pkl", "rb") as f:
-        model = pickle.load(f)
-    return model
+with open('classifier.pkl', 'rb') as f:
+    model_data = pickle.load(f)
+
+loaded_classifier = model_data['classifier']
+loaded_feat_names = model_data['feat_names']
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
