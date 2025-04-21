@@ -232,20 +232,27 @@ with tab1:
 
         # RDKit Fingerprint Calculation
         st.subheader("RDKit Fingerprint Calculation:")
-        # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
-        rdkit_fp = RDKFingerprint(mol)
+        
+        # Generate fingerprints for each specific size
+        fingerprints = {
+            "RDKit fingerprints93": RDKFingerprint(mol, nBits=93),
+            "RDKit fingerprints204": RDKFingerprint(mol, nBits=204),
+            "RDKit fingerprints292": RDKFingerprint(mol, nBits=292),
+            "RDKit fingerprints405": RDKFingerprint(mol, nBits=405),
+            "RDKit fingerprints690": RDKFingerprint(mol, nBits=690),
+            "RDKit fingerprints718": RDKFingerprint(mol, nBits=718),
+            "RDKit fingerprints926": RDKFingerprint(mol, nBits=926),
+        }
 
-        # Convert the fingerprint to a bit string or numpy array to display it
-        fp_array = np.array(rdkit_fp)
-        fingerprint_str = "".join(str(bit) for bit in fp_array)
+        # Display each fingerprint with its corresponding name
+        for name, fp in fingerprints.items():
+            # Convert the fingerprint to a numpy array for easier display
+            fp_array = np.array(fp)
+            fp_str = "".join(str(bit) for bit in fp_array)
 
-        # Display fingerprint as a bit string
-        st.write("Fingerprint (Bit String):")
-        st.text(fingerprint_str)
-
-        # Optionally display the fingerprint as a numpy array
-        st.write("Fingerprint (Numpy Array):")
-        st.write(fp_array)
+            st.write(f"**{name}:**")
+            st.text(fingerprint_str)  # Display the fingerprint as a bit string
+            st.write(fp_array)  # Optionally display the fingerprint as a numpy array
 
     if not mol:
         st.info("Please enter a valid SMILES string.")
