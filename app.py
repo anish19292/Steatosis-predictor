@@ -7,11 +7,10 @@ from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, P
 import pickle
 import numpy as np
 
-import joblib
-
-# Load the model with joblib
-def load_model():
-    return joblib.load('classifier.pkl')
+def load_classifier():
+    with open("classifier.pkl", "rb") as f:
+        model = pickle.load(f)
+    return model
 
 # Load the model and make predictions
 model = load_model()
