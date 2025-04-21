@@ -36,7 +36,6 @@ if loaded_classifier and loaded_feat_names:
 else:
     st.write("Failed to load model or feature names.")
 
-
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
