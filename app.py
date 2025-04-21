@@ -10,7 +10,6 @@ import numpy as np
 import joblib
 
 # Load the model with joblib
-@st.cache_resource
 def load_model():
     return joblib.load('classifier.pkl')
 
