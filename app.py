@@ -218,20 +218,37 @@ with tab1:
                                 within_domain = False
 
                     results.append({
-    "SMARTS": smarts,
-    "MIE": mie,
-    "Domain": formatted_domain if domain else "Not Available",
-    "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
-})
+                        "SMARTS": smarts,
+                        "MIE": mie,
+                        "Domain": formatted_domain if domain else "Not Available",
+                        "Within Domain": "Yes" if within_domain else "No",
+                    })
 
-if results:
-    st.subheader("Matching Alerts and MIE-Specific Domain Check:")
-    st.dataframe(results)
-else:
-    st.info("No matching structural alerts found for the given molecule.")
+        if results:
+            st.subheader("Matching Alerts and MIE-Specific Domain Check:")
+            st.dataframe(results)
+        else:
+            st.info("No matching structural alerts found for the given molecule.")
 
-if not mol:
-    st.info("Please enter a valid SMILES string.")
+        # RDKit Fingerprint Calculation
+        st.subheader("RDKit Fingerprint Calculation:")
+        # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
+        rdkit_fp = RDKFingerprint(mol)
+
+        # Convert the fingerprint to a bit string or numpy array to display it
+        fp_array = np.array(rdkit_fp)
+        fingerprint_str = "".join(str(bit) for bit in fp_array)
+
+        # Display fingerprint as a bit string
+        st.write("Fingerprint (Bit String):")
+        st.text(fingerprint_str)
+
+        # Optionally display the fingerprint as a numpy array
+        st.write("Fingerprint (Numpy Array):")
+        st.write(fp_array)
+
+    if not mol:
+        st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
 with tab2:
