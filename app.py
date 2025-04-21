@@ -217,17 +217,18 @@ if not mol:
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
-    # RDKit fingerprints (1024 bits)
-    rdkit_fp = RDKFingerprint(mol, fpSize=1024)  # 1024-bit fingerprint without useFeatures
-    fingerprints["RDKit_fp_1024"] = list(rdkit_fp)
+    # RDKit fingerprints with specific sizes
+    for size in [93, 204, 292, 405, 690, 718, 926]:  # List the sizes expected by the model
+        rdkit_fp = RDKFingerprint(mol, fpSize=size)
+        fingerprints[f"RDKit_fp_{size}"] = list(rdkit_fp)
 
-    # Layered fingerprint (1024 bits)
-    layered_fp = LayeredFingerprint(mol)
-    fingerprints["Layered_fp_1024"] = list(layered_fp)
+    # Layered fingerprint (size 109)
+    layered_fp = LayeredFingerprint(mol, fpSize=109)  # Assuming 109 bits for the layered fingerprint
+    fingerprints["Layered_fp_109"] = list(layered_fp)
 
-    # Pattern fingerprint (1024 bits)
+    # Pattern fingerprint (size 779)
     pattern_fp = PatternFingerprint(mol)
-    fingerprints["Pattern_fp_1024"] = list(pattern_fp)
+    fingerprints["Pattern_fp_779"] = list(pattern_fp)[:779]  # Truncate to 779 bits
 
     # Display the calculated fingerprints
     print("Calculated Fingerprints:")
