@@ -1,5 +1,5 @@
 streamlit==1.15.0
-rdkit-pypi==2022.9.5
+rdkit==2023.3.2
 scikit-learn==1.6.1
 joblib==1.2.0
 numpy==1.21.6
