@@ -233,14 +233,6 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
-            # Display the molecule structure
-            st.subheader("Molecule Structure")
-            img = Draw.MolToImage(mol, size=(300, 300))
-            st.image(img)
-    
-    except Exception as e:
-        st.error(f"Error: {e}")
-
 # Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
