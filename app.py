@@ -231,21 +231,32 @@ with tab1:
             st.info("No matching structural alerts found for the given molecule.")
 
         # RDKit Fingerprint Calculation
-        st.subheader("RDKit Fingerprint Calculation:")
-        # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
-        rdkit_fp = RDKFingerprint(mol)
+st.subheader("RDKit Fingerprint Calculation:")
+# Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
+rdkit_fp = RDKFingerprint(mol)
 
-        # Convert the fingerprint to a bit string or numpy array to display it
-        fp_array = np.array(rdkit_fp)
-        fingerprint_str = "".join(str(bit) for bit in fp_array)
+# Convert the fingerprint to a numpy array for easier manipulation
+fp_array = np.array(rdkit_fp)
 
-        # Display fingerprint as a bit string
-        st.write("Fingerprint (Bit String):")
-        st.text(fingerprint_str)
+# Create a DataFrame with fingerprint names (e.g., RDKit fingerprints0, RDKit fingerprints1, ...)
+fingerprint_names = [f"RDKit fingerprints{idx}" for idx in range(len(fp_array))]
+fingerprint_df = pd.DataFrame({
+    "Fingerprint Name": fingerprint_names,
+    "Bit Value": fp_array
+})
 
-        # Optionally display the fingerprint as a numpy array
-        st.write("Fingerprint (Numpy Array):")
-        st.write(fp_array)
+# Display the fingerprint as a DataFrame
+st.write("Fingerprint (Named Bits and Values):")
+st.dataframe(fingerprint_df)
+
+# Optionally display the fingerprint as a bit string
+fingerprint_str = "".join(str(bit) for bit in fp_array)
+st.write("Fingerprint (Bit String):")
+st.text(fingerprint_str)
+
+# Optionally display the fingerprint as a numpy array
+st.write("Fingerprint (
+
 
     if not mol:
         st.info("Please enter a valid SMILES string.")
