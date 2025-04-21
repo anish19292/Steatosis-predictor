@@ -235,6 +235,11 @@ st.subheader("RDKit Fingerprint Calculation:")
 # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
 rdkit_fp = RDKFingerprint(mol)
 
+# RDKit Fingerprint Calculation
+st.subheader("RDKit Fingerprint Calculation:")
+# Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
+rdkit_fp = RDKFingerprint(mol)
+
 # Convert the fingerprint to a numpy array for easier manipulation
 fp_array = np.array(rdkit_fp)
 
@@ -255,8 +260,8 @@ st.write("Fingerprint (Bit String):")
 st.text(fingerprint_str)
 
 # Optionally display the fingerprint as a numpy array
-st.write("Fingerprint (
-
+st.write("Fingerprint (Numpy Array):")
+st.write(fp_array)
 
     if not mol:
         st.info("Please enter a valid SMILES string.")
