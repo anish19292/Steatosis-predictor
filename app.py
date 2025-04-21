@@ -214,40 +214,37 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
-# Function to compute all RDKit, Layered, and Pattern fingerprints
+# Function to compute fingerprints
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
     # RDKit fingerprints (size 1024, with expanded bit vector)
     rdkit_fp = RDKFingerprint(mol, fpSize=1024, useFeatures=True)  # Expanded bit vector
     fingerprints["RDKit_fp_1024"] = list(rdkit_fp)
+    print(f"RDKit_fp_1024: Length = {len(fingerprints['RDKit_fp_1024'])}")  # Check length
 
     # Layered fingerprint (default size: 2048 bits)
     layered_fp = LayeredFingerprint(mol)
     fingerprints["Layered_fp_2048"] = list(layered_fp)
+    print(f"Layered_fp_2048: Length = {len(fingerprints['Layered_fp_2048'])}")  # Check length
 
     # Pattern fingerprint (default size: 2048 bits)
     pattern_fp = PatternFingerprint(mol)
     fingerprints["Pattern_fp_2048"] = list(pattern_fp)
+    print(f"Pattern_fp_2048: Length = {len(fingerprints['Pattern_fp_2048'])}")  # Check length
 
     return fingerprints
 
-# Compute fingerprints for the input molecule
-if mol:  # assuming mol is the RDKit molecule object
+# Assuming mol is a valid molecule object
+if mol:
     fingerprints = compute_all_fingerprints(mol)
 
-    # Display the fingerprints output for debugging
+    # Display the calculated fingerprints
     st.write("Calculated Fingerprints:")
     for key, fp in fingerprints.items():
         st.write(f"{key}: {fp[:10]}... (showing first 10 bits)")
-
-    # If you'd like to display more or all of the fingerprint, you can adjust the slicing
-    # e.g., st.write(f"{key}: {fp}")
-
-# Assuming `mol` is already defined and valid
-if mol:
-    # 1. Compute all fingerprints
-    all_fps = compute_all_fingerprints(mol)
+else:
+    st.error("Invalid molecule. Please check the SMILES string.")
 
     # 2. Flatten all fingerprints into a single dictionary
     flat_features = {}
