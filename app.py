@@ -251,7 +251,7 @@ with tab1:
             st.dataframe(results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
-    else:
+        else:
         st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
