@@ -233,12 +233,6 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
-import streamlit as st
-from rdkit import Chem
-from rdkit.Chem import Draw
-from rdkit.Chem import RDKFingerprint, PatternFingerprint, LayeredFingerprint
-import numpy as np
-
 # Function to compute fingerprints
 def compute_fingerprints(mol):
     fingerprints = {}
