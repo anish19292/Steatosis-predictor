@@ -247,12 +247,13 @@ with tab1:
                     })
 
         if results:
-            st.subheader("Matching Alerts and MIE-Specific Domain Check:")
-            st.dataframe(results)
-        else:
-            st.info("No matching structural alerts found for the given molecule.")
-        else:
-        st.info("Please enter a valid SMILES string.")
+    st.subheader("Matching Alerts and MIE-Specific Domain Check:")
+    st.dataframe(results)
+else:
+    st.info("No matching structural alerts found for the given molecule.")
+    
+if not mol:
+    st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
 with tab2:
