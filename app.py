@@ -284,8 +284,6 @@ if loaded_classifier:
     else:
         st.warning("Steatosis Unlikely")
 
-    st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
-
 # Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
