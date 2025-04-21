@@ -171,6 +171,27 @@ with tab1:
         hbd = Lipinski.NumHDonors(mol)
         hba = Lipinski.NumHAcceptors(mol)
 
+        # Generate different fingerprints with named outputs
+        fingerprints = {
+            "RDKit fingerprints93": RDKFingerprint(mol, nBits=93),
+            "RDKit fingerprints204": RDKFingerprint(mol, nBits=204),
+            "RDKit fingerprints292": RDKFingerprint(mol, nBits=292),
+            "RDKit fingerprints405": RDKFingerprint(mol, nBits=405),
+            "RDKit fingerprints690": RDKFingerprint(mol, nBits=690),
+            "RDKit fingerprints718": RDKFingerprint(mol, nBits=718),
+            "RDKit fingerprints926": RDKFingerprint(mol, nBits=926)
+        }
+
+        # Display fingerprints with appropriate names
+        st.subheader("Fingerprints")
+        st.write("RDKit Fingerprints for the given SMILES:")
+
+        for name, fp in fingerprints.items():
+            fp_list = list(fp)  # Convert the fingerprint to a list for display
+            st.write(f"**{name}:**")
+            st.write(fp_list)
+
+        # Structural Alert Analysis with MIE-Specific Domain Check
         st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
         results = []
         for smarts, mie_data in smarts_mie_mapping.items():
@@ -221,7 +242,7 @@ with tab1:
                         "SMARTS": smarts,
                         "MIE": mie,
                         "Domain": formatted_domain if domain else "Not Available",
-                        "Within Domain": "Yes" if within_domain else "No",
+                        "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
                     })
 
         if results:
@@ -229,23 +250,6 @@ with tab1:
             st.dataframe(results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
-
-        # RDKit Fingerprint Calculation
-        st.subheader("RDKit Fingerprint Calculation:")
-        # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
-        rdkit_fp = RDKFingerprint(mol)
-
-        # Convert the fingerprint to a bit string or numpy array to display it
-        fp_array = np.array(rdkit_fp)
-        fingerprint_str = "".join(str(bit) for bit in fp_array)
-
-        # Display fingerprint as a bit string
-        st.write("Fingerprint (Bit String):")
-        st.text(fingerprint_str)
-
-        # Optionally display the fingerprint as a numpy array
-        st.write("Fingerprint (Numpy Array):")
-        st.write(fp_array)
 
     if not mol:
         st.info("Please enter a valid SMILES string.")
