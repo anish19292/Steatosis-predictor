@@ -230,10 +230,10 @@ with tab1:
         else:
             st.info("No matching structural alerts found for the given molecule.")
 
-        # RDKit Fingerprint Calculation
-        st.subheader("RDKit Fingerprint Calculation:")
-        # Using RDKit Fingerprint (can replace with other types like MACCS, Layered, etc.)
-        rdkit_fp = RDKFingerprint(mol)
+        # RDKit Fingerprint Calculation (1024-bit)
+        st.subheader("1024-bit RDKit Fingerprint Calculation:")
+        # Using RDKit Fingerprint with 1024 bits
+        rdkit_fp = RDKFingerprint(mol, fpSize=1024)
 
         # Convert the fingerprint to a bit string or numpy array to display it
         fp_array = np.array(rdkit_fp)
