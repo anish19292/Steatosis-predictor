@@ -1,16 +1,17 @@
+import pickle
+import numpy as np
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
-from rdkit.Chem import Descriptors
-from rdkit.Chem import Lipinski
-from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
-import pickle
-import numpy as np
+from rdkit.Chem import RDKFingerprint
+from rdkit.Chem import FingerprintMols
+from rdkit.Chem import PatternFingerprint
+from rdkit.Chem import LayeredFingerprint
 
-def load_classifier():
-    with open("classifier.pkl", "rb") as f:
-        model = pickle.load(f)
-    return model
+# Load the model and feature names
+model_data = pickle.load(open('classifier_1.pkl', 'rb'))
+loaded_classifier = model_data['classifier']
+loaded_feat_names = model_data['feat_names']
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
@@ -129,29 +130,6 @@ with tab1:
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
 
-    # Function to compute only the 9 specific fingerprints
-    def compute_fingerprints(mol):
-        fingerprints = {}
-
-        # RDKit fingerprints with varying lengths (93, 204, 292, 405, 690, 718, 926)
-        fingerprints["RDKit_fp_93"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=93)
-        fingerprints["RDKit_fp_204"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=204)
-        fingerprints["RDKit_fp_292"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=292)
-        fingerprints["RDKit_fp_405"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=405)
-        fingerprints["RDKit_fp_690"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=690)
-        fingerprints["RDKit_fp_718"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=718)
-        fingerprints["RDKit_fp_926"] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=926)
-
-        # Layered fingerprint (109)
-        layered_fp = RDKFingerprint(mol, maxPath=109)
-        fingerprints["Layered_fp_109"] = layered_fp
-
-        # Pattern fingerprint (779)
-        pattern_fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=779)
-        fingerprints["Pattern_fp_779"] = pattern_fp
-
-        return fingerprints
-
     # Convert SMILES to RDKit Mol
     mol = None
     if smiles_input:
@@ -163,33 +141,6 @@ with tab1:
     if mol:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
-
-        # Calculate fingerprints (only the required 9)
-        fingerprints = compute_fingerprints(mol)
-
-        # Flatten the fingerprints into a single feature array
-        fingerprint_features = []
-        for size in [93, 204, 292, 405, 690, 718, 926, 109, 779]:
-            fp_key = f"RDKit_fp_{size}" if size != 109 and size != 779 else f"Layered_fp_109" if size == 109 else f"Pattern_fp_779"
-            fingerprint_features.extend(fingerprints[fp_key].ToBitString())
-
-        # Convert fingerprint features to numpy array
-        feature_vector = np.array(fingerprint_features).reshape(1, -1)  # Reshaping to match classifier input
-
-        # Load the model and make a prediction
-        model = load_classifier()
-
-        # Predict using the model
-        prediction = model.predict(feature_vector)
-
-        # Display the result
-        if prediction:
-            st.subheader("Prediction Result:")
-            st.write(f"Predicted Class: {prediction[0]}")
-        else:
-            st.error("Prediction could not be made.")
-    else:
-        st.info("Please enter a valid SMILES string.")
 
         # Property-based domain analysis
         mw = Descriptors.MolWt(mol)
