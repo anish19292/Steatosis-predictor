@@ -5,12 +5,7 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
 import pickle
-import numpy as np
-
-# Load the model and feat_names
-model_data = pickle.load(open('classifier.pkl', 'rb'))
-loaded_classifier = model_data['classifier']
-          
+import numpy as np          
 
 # Load the classifier once
 classifier = load_classifier()
