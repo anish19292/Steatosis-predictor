@@ -7,6 +7,7 @@ from rdkit.Chem import RDKFingerprint
 from rdkit.Chem import PatternFingerprint
 from rdkit.Chem import LayeredFingerprint
 import pickle
+from rdkit.Chem import Descriptors
 
 # Load the model and feature names
 with open('classifier.pkl', 'rb') as f:
