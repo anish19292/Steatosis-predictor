@@ -214,6 +214,29 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
+
+from rdkit import Chem
+from rdkit.Chem import AllChem, Draw
+from rdkit.Chem.rdMolDescriptors import LayeredFingerprint, PatternFingerprint, RDKFingerprint
+
+def compute_all_fingerprints(mol):
+    fingerprints = {}
+
+    # RDKit fingerprints (default size: 2048 bits)
+    rdkit_fp = RDKFingerprint(mol)
+    fingerprints["RDKit_fp_2048"] = list(rdkit_fp)
+
+    # Layered fingerprint (default: 2048 bits)
+    layered_fp = LayeredFingerprint(mol)
+    fingerprints["Layered_fp_2048"] = list(layered_fp)
+
+    # Pattern fingerprint (default: 2048 bits)
+    pattern_fp = PatternFingerprint(mol)
+    fingerprints["Pattern_fp_2048"] = list(pattern_fp)
+
+    return fingerprints
+
+
 # Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
