@@ -277,8 +277,8 @@ else:
 
 st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
 
-    else:
-        st.info("Please enter a valid SMILES string.")
+else:
+    st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
 with tab2:
