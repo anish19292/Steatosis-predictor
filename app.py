@@ -161,30 +161,6 @@ with tab1:
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        # Calculate fingerprints silently (not displayed)
-        fingerprints = compute_fingerprints(mol)
-
-        # Flatten the fingerprints into a single feature array
-        fingerprint_features = []
-        for size in [93, 204, 292, 405, 690, 718, 926, 109, 779]:
-            fp_key = f"RDKit_fp_{size}" if size != 109 and size != 779 else f"Layered_fp_109" if size == 109 else f"Pattern_fp_779"
-            fingerprint_features.extend(fingerprints[fp_key])
-
-        # Convert fingerprint features to numpy array
-        feature_vector = np.array(fingerprint_features).reshape(1, -1)  # Reshaping to match classifier input
-
-        # Predict using the model
-        prediction = model.predict(feature_vector)
-
-        # Display the result
-        if prediction:
-            st.subheader("Prediction Result:")
-            st.write(f"Predicted Class: {prediction[0]}")
-        else:
-            st.error("Prediction could not be made.")
-    else:
-        st.info("Please enter a valid SMILES string.")
-
         # Property-based domain analysis
         mw = Descriptors.MolWt(mol)
         logp = Descriptors.MolLogP(mol)
