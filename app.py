@@ -248,18 +248,9 @@ with tab1:
             "Bit Value": fp_array
         })
 
-        # Display the fingerprint as a DataFrame
+        # Display only the fingerprint (Named Bits and Values)
         st.write("Fingerprint (Named Bits and Values):")
         st.dataframe(fingerprint_df)
-
-        # Optionally display the fingerprint as a bit string
-        fingerprint_str = "".join(str(bit) for bit in fp_array)
-        st.write("Fingerprint (Bit String):")
-        st.text(fingerprint_str)
-
-        # Optionally display the fingerprint as a numpy array
-        st.write("Fingerprint (Numpy Array):")
-        st.write(fp_array)
 
     else:
         st.info("Please enter a valid SMILES string.")
