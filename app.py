@@ -214,6 +214,7 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
+# Function to compute all fingerprints
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
@@ -230,6 +231,35 @@ def compute_all_fingerprints(mol):
     fingerprints["Pattern_fp_2048"] = list(pattern_fp)
 
     return fingerprints
+
+# Assuming `mol` is already defined and valid
+if mol:
+    # 1. Compute all fingerprints
+    all_fps = compute_all_fingerprints(mol)
+
+    # 2. Flatten all fingerprints into a single dictionary
+    flat_features = {}
+    for fp_type, bitlist in all_fps.items():
+        for i, bit in enumerate(bitlist):
+            flat_features[f"{fp_type}_{i}"] = bit
+
+    # 3. Filter only model-relevant features
+    try:
+        model_input_vector = [flat_features[feat] for feat in loaded_feat_names]
+    except KeyError as e:
+        st.error(f"Missing feature in fingerprint: {e}")
+        st.stop()
+
+    # 4. Convert to NumPy array and reshape
+    model_input_array = np.array(model_input_vector).reshape(1, -1)
+
+    # 5. Predict using classifier
+    prediction = loaded_classifier.predict(model_input_array)
+
+    # 6. Display result
+    st.subheader("Prediction Result")
+    st.write("⚠️ **Predicted: Steatosis**" if prediction[0] == 1 else "✅ **Predicted: Non-Steatosis**")
+
 
 
 # Tab 2: About
