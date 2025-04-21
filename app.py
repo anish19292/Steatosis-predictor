@@ -214,11 +214,6 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
-
-from rdkit import Chem
-from rdkit.Chem import AllChem, Draw
-from rdkit.Chem.rdMolDescriptors import LayeredFingerprint, PatternFingerprint, RDKFingerprint
-
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
