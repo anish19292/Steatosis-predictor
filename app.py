@@ -6,6 +6,7 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
 import numpy as np
+import pandas as pd
 
 # Function to load the classifier and feature names
 def load_model():
