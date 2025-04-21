@@ -7,6 +7,16 @@ from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, P
 import pickle
 import numpy as np
 
+# Load the classifier (make sure the classifier.pkl is in the correct directory)
+@st.cache_resource
+def load_classifier():
+    with open("classifier.pkl", "rb") as f:
+        model = pickle.load(f)
+    return model
+
+# Load the classifier once
+classifier = load_classifier()
+
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
