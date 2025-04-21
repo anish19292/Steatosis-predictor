@@ -217,15 +217,15 @@ if not mol:
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
-    # RDKit fingerprints (1024 bits, with expanded bit vector)
-    rdkit_fp = RDKFingerprint(mol, fpSize=1024, useFeatures=True)  # useFeatures=True for expanded bit vector
+    # RDKit fingerprints (1024 bits)
+    rdkit_fp = RDKFingerprint(mol, fpSize=1024)  # 1024-bit fingerprint without useFeatures
     fingerprints["RDKit_fp_1024"] = list(rdkit_fp)
 
-    # Layered fingerprint (1024 bits, with expanded bit vector)
+    # Layered fingerprint (1024 bits)
     layered_fp = LayeredFingerprint(mol)
     fingerprints["Layered_fp_1024"] = list(layered_fp)
 
-    # Pattern fingerprint (1024 bits, with expanded bit vector)
+    # Pattern fingerprint (1024 bits)
     pattern_fp = PatternFingerprint(mol)
     fingerprints["Pattern_fp_1024"] = list(pattern_fp)
 
