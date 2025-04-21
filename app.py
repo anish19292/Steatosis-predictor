@@ -18,6 +18,7 @@ def load_model():
         if 'classifier' in model_data and 'feat_names' in model_data:
             loaded_classifier = model_data['classifier']
             loaded_feat_names = model_data['feat_names']
+            print(f"Loaded classifier type: {type(loaded_classifier)}")  # Print to verify type
             return loaded_classifier, loaded_feat_names
         else:
             raise KeyError("Missing keys: 'classifier' or 'feat_names' in the model data.")
