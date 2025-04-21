@@ -1,17 +1,41 @@
 import streamlit as st
+import pickle
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
-import pickle
 import numpy as np
 
-with open('classifier.pkl', 'rb') as f:
-    model_data = pickle.load(f)
+# Function to load the classifier and feature names
+def load_model():
+    try:
+        with open('classifier.pkl', 'rb') as f:
+            model_data = pickle.load(f)
 
-loaded_classifier = model_data['classifier']
-loaded_feat_names = model_data['feat_names']
+        # Check that the keys exist in the loaded data
+        if 'classifier' in model_data and 'feat_names' in model_data:
+            loaded_classifier = model_data['classifier']
+            loaded_feat_names = model_data['feat_names']
+            return loaded_classifier, loaded_feat_names
+        else:
+            raise KeyError("Missing keys: 'classifier' or 'feat_names' in the model data.")
+    except FileNotFoundError:
+        st.error("Model file 'classifier.pkl' not found.")
+    except KeyError as e:
+        st.error(f"Key error: {e}")
+    except Exception as e:
+        st.error(f"An error occurred while loading the model: {e}")
+    return None, None
+
+# Load the model
+loaded_classifier, loaded_feat_names = load_model()
+
+if loaded_classifier and loaded_feat_names:
+    st.write("Model and feature names loaded successfully.")
+else:
+    st.write("Failed to load model or feature names.")
+
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
