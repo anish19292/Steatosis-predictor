@@ -214,21 +214,20 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
-# Function to compute all fingerprints
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
-    # RDKit fingerprints (default size: 2048 bits)
-    rdkit_fp = RDKFingerprint(mol)
-    fingerprints["RDKit_fp_2048"] = list(rdkit_fp)
+    # RDKit fingerprints (1024 bits)
+    rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+    fingerprints["RDKit_fp_1024"] = list(rdkit_fp)
 
-    # Layered fingerprint (default: 2048 bits)
-    layered_fp = LayeredFingerprint(mol)
-    fingerprints["Layered_fp_2048"] = list(layered_fp)
+    # Layered fingerprint (1024 bits)
+    layered_fp = LayeredFingerprint(mol, fpSize=1024)
+    fingerprints["Layered_fp_1024"] = list(layered_fp)
 
-    # Pattern fingerprint (default: 2048 bits)
-    pattern_fp = PatternFingerprint(mol)
-    fingerprints["Pattern_fp_2048"] = list(pattern_fp)
+    # Pattern fingerprint (1024 bits)
+    pattern_fp = PatternFingerprint(mol, fpSize=1024)
+    fingerprints["Pattern_fp_1024"] = list(pattern_fp)
 
     return fingerprints
 
