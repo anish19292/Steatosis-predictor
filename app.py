@@ -173,9 +173,6 @@ with tab1:
         # Convert fingerprint features to numpy array
         feature_vector = np.array(fingerprint_features).reshape(1, -1)  # Reshaping to match classifier input
 
-        # Load the model and make a prediction
-        model = load_classifier()
-
         # Predict using the model
         prediction = model.predict(feature_vector)
 
