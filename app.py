@@ -12,8 +12,6 @@ def load_classifier():
         model = pickle.load(f)
     return model
 
-model = load_classifier()
-
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
