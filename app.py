@@ -17,7 +17,6 @@ with open('classifier.pkl', 'rb') as f:
 loaded_classifier = model_data['classifier']  # This is the DecisionTreeClassifier
 loaded_feat_names = model_data['feat_names']  # These are the feature names
 
-
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
     "C(=C\\c1ccccc1)\c1ccccc1": {
