@@ -270,7 +270,7 @@ input_df = pd.DataFrame([input_data])
 st.write("Selected Fingerprints (Named Bits and Values):")
 st.dataframe(input_df)
 
-# Predict using the classifier (input is the dataframe with the features)
+# Predict using the classifier (input is the DataFrame with the features)
 prediction = classifier.predict(input_df)
 prediction_prob = classifier.predict_proba(input_df)
 
