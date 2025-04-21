@@ -233,6 +233,59 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
+import streamlit as st
+from rdkit import Chem
+from rdkit.Chem import Draw
+from rdkit.Chem import RDKFingerprint, PatternFingerprint, LayeredFingerprint
+import numpy as np
+
+# Function to compute fingerprints
+def compute_fingerprints(mol):
+    fingerprints = {}
+
+    # RDKit fingerprint (default size: 2048 bits)
+    rdkit_fp = RDKFingerprint(mol, fpSize=2048)  # 2048 is the default size
+    fingerprints["RDKit_fp_2048"] = list(rdkit_fp)
+
+    # Layered fingerprint (default: 2048 bits)
+    layered_fp = LayeredFingerprint(mol)
+    fingerprints["Layered_fp_2048"] = list(layered_fp)
+
+    # Pattern fingerprint (default: 2048 bits)
+    pattern_fp = PatternFingerprint(mol)
+    fingerprints["Pattern_fp_2048"] = list(pattern_fp)
+
+    return fingerprints
+
+# Streamlit UI for SMILES input
+st.title("Fingerprint Calculation")
+smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
+
+# Check and calculate fingerprints
+if smiles_input:
+    try:
+        # Convert SMILES string to RDKit molecule
+        mol = Chem.MolFromSmiles(smiles_input)
+        
+        if mol is None:
+            st.error("Invalid SMILES string.")
+        else:
+            # Calculate fingerprints
+            fingerprints = compute_fingerprints(mol)
+            
+            # Display the fingerprints
+            st.subheader("Calculated Fingerprints")
+            for name, fp in fingerprints.items():
+                st.write(f"{name}: {fp[:100]}...")  # Display only the first 100 bits for brevity
+
+            # Display the molecule structure
+            st.subheader("Molecule Structure")
+            img = Draw.MolToImage(mol, size=(300, 300))
+            st.image(img)
+    
+    except Exception as e:
+        st.error(f"Error: {e}")
+
 # Tab 2: About
 with tab2:
     st.header("About Steatosis Predictor")
