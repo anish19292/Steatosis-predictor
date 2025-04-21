@@ -4,7 +4,6 @@ import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem import RDKFingerprint
-from rdkit.Chem import FingerprintMols
 from rdkit.Chem import PatternFingerprint
 from rdkit.Chem import LayeredFingerprint
 
