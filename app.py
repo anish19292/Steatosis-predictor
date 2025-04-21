@@ -5,7 +5,14 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import Lipinski
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, PatternFingerprint
 import pickle
-import numpy as np          
+import numpy as np
+
+import joblib
+
+# Load the model with joblib
+@st.cache_resource
+def load_model():
+    return joblib.load('classifier.pkl')
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
