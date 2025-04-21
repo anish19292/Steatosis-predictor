@@ -7,9 +7,10 @@ from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint, LayeredFingerprint, P
 import pickle
 import numpy as np
 
-# Load the model directly
-with open("classifier.pkl", "rb") as f:
-    model = pickle.load(f)
+# Load the model and feat_names
+model_data = pickle.load(open('classifier.pkl', 'rb'))
+loaded_classifier = model_data['classifier']
+          
 
 # Load the classifier once
 classifier = load_classifier()
