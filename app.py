@@ -6,11 +6,15 @@ from rdkit.Chem import Draw
 from rdkit.Chem import RDKFingerprint
 from rdkit.Chem import PatternFingerprint
 from rdkit.Chem import LayeredFingerprint
+import pickle
 
 # Load the model and feature names
-model_data = pickle.load(open('classifier.pkl', 'rb'))
-loaded_classifier = model_data['classifier']
-loaded_feat_names = model_data['feat_names']
+with open('classifier.pkl', 'rb') as f:
+    model_data = pickle.load(f)
+
+loaded_classifier = model_data['classifier']  # This is the DecisionTreeClassifier
+loaded_feat_names = model_data['feat_names']  # These are the feature names
+
 
 # Define SMARTS patterns and their associated MIEs with chemical property domains
 smarts_mie_mapping = {
