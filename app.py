@@ -171,6 +171,57 @@ with tab1:
         hbd = Lipinski.NumHDonors(mol)
         hba = Lipinski.NumHAcceptors(mol)
 
+        # Generate different fingerprints
+        # 93-bit fingerprint
+        fp93 = RDKFingerprint(mol, nBits=93)
+        # 204-bit fingerprint
+        fp204 = RDKFingerprint(mol, nBits=204)
+        # 292-bit fingerprint
+        fp292 = RDKFingerprint(mol, nBits=292)
+        # 405-bit fingerprint
+        fp405 = RDKFingerprint(mol, nBits=405)
+        # 690-bit fingerprint
+        fp690 = RDKFingerprint(mol, nBits=690)
+        # 718-bit fingerprint
+        fp718 = RDKFingerprint(mol, nBits=718)
+        # 926-bit fingerprint
+        fp926 = RDKFingerprint(mol, nBits=926)
+
+        # Convert fingerprints to bit vectors (lists) for display
+        fp93_list = list(fp93)
+        fp204_list = list(fp204)
+        fp292_list = list(fp292)
+        fp405_list = list(fp405)
+        fp690_list = list(fp690)
+        fp718_list = list(fp718)
+        fp926_list = list(fp926)
+
+        # Display the fingerprints
+        st.subheader("Fingerprints")
+        st.write("RDKit Fingerprints for the given SMILES:")
+
+        st.write("**RDKit fingerprints93 (93 bits):**")
+        st.write(fp93_list)
+        
+        st.write("**RDKit fingerprints204 (204 bits):**")
+        st.write(fp204_list)
+        
+        st.write("**RDKit fingerprints292 (292 bits):**")
+        st.write(fp292_list)
+        
+        st.write("**RDKit fingerprints405 (405 bits):**")
+        st.write(fp405_list)
+        
+        st.write("**RDKit fingerprints690 (690 bits):**")
+        st.write(fp690_list)
+        
+        st.write("**RDKit fingerprints718 (718 bits):**")
+        st.write(fp718_list)
+        
+        st.write("**RDKit fingerprints926 (926 bits):**")
+        st.write(fp926_list)
+
+        # Structural Alert Analysis with MIE-Specific Domain Check
         st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
         results = []
         for smarts, mie_data in smarts_mie_mapping.items():
@@ -221,7 +272,7 @@ with tab1:
                         "SMARTS": smarts,
                         "MIE": mie,
                         "Domain": formatted_domain if domain else "Not Available",
-                        "Within Domain": "Yes" if within_domain else "No",
+                        "Within Domain": "Yes" if within_domain is True else ("No" if within_domain is False else "N/A"),
                     })
 
         if results:
@@ -229,23 +280,6 @@ with tab1:
             st.dataframe(results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
-
-        # RDKit Fingerprint Calculation (1024-bit)
-        st.subheader("1024-bit RDKit Fingerprint Calculation:")
-        # Using RDKit Fingerprint with 1024 bits
-        rdkit_fp = RDKFingerprint(mol, fpSize=1024)
-
-        # Convert the fingerprint to a bit string or numpy array to display it
-        fp_array = np.array(rdkit_fp)
-        fingerprint_str = "".join(str(bit) for bit in fp_array)
-
-        # Display fingerprint as a bit string
-        st.write("Fingerprint (Bit String):")
-        st.text(fingerprint_str)
-
-        # Optionally display the fingerprint as a numpy array
-        st.write("Fingerprint (Numpy Array):")
-        st.write(fp_array)
 
     if not mol:
         st.info("Please enter a valid SMILES string.")
