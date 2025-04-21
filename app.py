@@ -238,43 +238,44 @@ with tab1:
             st.info("No matching structural alerts found for the given molecule.")
 
         # RDKit Fingerprint Calculation
-        st.subheader("RDKit Fingerprint Calculation:")
-        rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+st.subheader("RDKit Fingerprint Calculation:")
+rdkit_fp = RDKFingerprint(mol, fpSize=1024)
 
-        # Convert the fingerprint to a numpy array for easier manipulation
-        fp_array = np.array(rdkit_fp)
+# Convert the fingerprint to a numpy array for easier manipulation
+fp_array = np.array(rdkit_fp)
 
-        # Extract specific fingerprints (93, 204, 292, 405, 690, 718, 926 bits)
-        fingerprint_names = [
-            "RDKit fingerprints93", "RDKit fingerprints204", "RDKit fingerprints292", 
-            "RDKit fingerprints405", "RDKit fingerprints690", "RDKit fingerprints718", "RDKit fingerprints926"
-        ]
-        selected_fingerprints = [
-            fp_array[93], fp_array[204], fp_array[292], 
-            fp_array[405], fp_array[690], fp_array[718], fp_array[926]
-        ]
+# Extract specific fingerprints (93, 204, 292, 405, 690, 718, 926 bits)
+fingerprint_names = [
+    "RDKit fingerprints93", "RDKit fingerprints204", "RDKit fingerprints292", 
+    "RDKit fingerprints405", "RDKit fingerprints690", "RDKit fingerprints718", "RDKit fingerprints926"
+]
+selected_fingerprints = [
+    fp_array[93], fp_array[204], fp_array[292], 
+    fp_array[405], fp_array[690], fp_array[718], fp_array[926]
+]
 
-        # Create a DataFrame for displaying the selected fingerprints
-        fingerprint_df = pd.DataFrame({
-            "Fingerprint Name": fingerprint_names,
-            "Bit Value": selected_fingerprints
-        })
+# Create a dictionary with feature names as keys and their corresponding values
+input_data = {name: value for name, value in zip(fingerprint_names, selected_fingerprints)}
 
-        # Display the selected fingerprints
-        st.write("Selected Fingerprints (Named Bits and Values):")
-        st.dataframe(fingerprint_df)
-        # Predict using the classifier
-        prediction = classifier.predict([selected_fingerprints])
-        prediction_prob = classifier.predict_proba([selected_fingerprints])
+# Convert the dictionary to a DataFrame, as the model was trained on DataFrame input
+input_df = pd.DataFrame([input_data])
 
-        # Show prediction result
-        st.subheader("Prediction:")
-        if prediction[0] == 1:
-            st.success("Steatosis Likely")
-        else:
-            st.warning("Steatosis Unlikely")
+# Display the selected fingerprints
+st.write("Selected Fingerprints (Named Bits and Values):")
+st.dataframe(input_df)
 
-        st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
+# Predict using the classifier (input is the dataframe with the features)
+prediction = classifier.predict(input_df)
+prediction_prob = classifier.predict_proba(input_df)
+
+# Show prediction result
+st.subheader("Prediction:")
+if prediction[0] == 1:
+    st.success("Steatosis Likely")
+else:
+    st.warning("Steatosis Unlikely")
+
+st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
 
     else:
         st.info("Please enter a valid SMILES string.")
