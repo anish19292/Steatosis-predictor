@@ -1,6 +1,6 @@
 streamlit==1.16.0
 rdkit==2023.3.2
 scikit-learn==1.6.1
-numpy==1.21.6
+numpy==2.0.2
 pandas==1.5.3
 altair==4.2.0
