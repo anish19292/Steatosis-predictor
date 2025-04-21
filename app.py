@@ -153,25 +153,6 @@ with tab1:
     # Input: SMILES string
     smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
 
-    # Function to compute fingerprints silently
-    def compute_fingerprints(mol):
-        fingerprints = {}
-
-        # RDKit fingerprints with varying lengths
-        for size in [93, 204, 292, 405, 690, 718, 926]:
-            fp = RDKFingerprint(mol, fpSize=size)
-            fingerprints[f"RDKit_fp_{size}"] = list(fp)
-
-        # Layered fingerprint
-        layered_fp = LayeredFingerprint(mol, fpSize=109)
-        fingerprints["Layered_fp_109"] = list(layered_fp)
-
-        # Pattern fingerprint (truncate to 779 bits)
-        pattern_fp = PatternFingerprint(mol)
-        fingerprints["Pattern_fp_779"] = list(pattern_fp)[:779]
-
-        return fingerprints
-
     # Convert SMILES to RDKit Mol
     mol = None
     if smiles_input:
