@@ -229,6 +229,11 @@ def compute_all_fingerprints(mol):
     pattern_fp = PatternFingerprint(mol)
     fingerprints["Pattern_fp_1024"] = list(pattern_fp)
 
+    # Display the calculated fingerprints
+    print("Calculated Fingerprints:")
+    for key, value in fingerprints.items():
+        print(f"{key}: {len(value)} bits")
+    
     return fingerprints
 
 # Assuming `mol` is already defined and valid
