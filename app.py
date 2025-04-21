@@ -214,28 +214,35 @@ else:
 if not mol:
     st.info("Please enter a valid SMILES string.")
 
+# Function to compute all RDKit, Layered, and Pattern fingerprints
 def compute_all_fingerprints(mol):
     fingerprints = {}
 
-    # RDKit fingerprints with specific sizes
-    for size in [93, 204, 292, 405, 690, 718, 926]:  # List the sizes expected by the model
-        rdkit_fp = RDKFingerprint(mol, fpSize=size)
-        fingerprints[f"RDKit_fp_{size}"] = list(rdkit_fp)
+    # RDKit fingerprints (size 1024, with expanded bit vector)
+    rdkit_fp = RDKFingerprint(mol, fpSize=1024, useFeatures=True)  # Expanded bit vector
+    fingerprints["RDKit_fp_1024"] = list(rdkit_fp)
 
-    # Layered fingerprint (size 109)
-    layered_fp = LayeredFingerprint(mol, fpSize=109)  # Assuming 109 bits for the layered fingerprint
-    fingerprints["Layered_fp_109"] = list(layered_fp)
+    # Layered fingerprint (default size: 2048 bits)
+    layered_fp = LayeredFingerprint(mol)
+    fingerprints["Layered_fp_2048"] = list(layered_fp)
 
-    # Pattern fingerprint (size 779)
+    # Pattern fingerprint (default size: 2048 bits)
     pattern_fp = PatternFingerprint(mol)
-    fingerprints["Pattern_fp_779"] = list(pattern_fp)[:779]  # Truncate to 779 bits
+    fingerprints["Pattern_fp_2048"] = list(pattern_fp)
 
-    # Display the calculated fingerprints
-    print("Calculated Fingerprints:")
-    for key, value in fingerprints.items():
-        print(f"{key}: {len(value)} bits")
-    
     return fingerprints
+
+# Compute fingerprints for the input molecule
+if mol:  # assuming mol is the RDKit molecule object
+    fingerprints = compute_all_fingerprints(mol)
+
+    # Display the fingerprints output for debugging
+    st.write("Calculated Fingerprints:")
+    for key, fp in fingerprints.items():
+        st.write(f"{key}: {fp[:10]}... (showing first 10 bits)")
+
+    # If you'd like to display more or all of the fingerprint, you can adjust the slicing
+    # e.g., st.write(f"{key}: {fp}")
 
 # Assuming `mol` is already defined and valid
 if mol:
