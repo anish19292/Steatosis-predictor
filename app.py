@@ -171,8 +171,6 @@ with tab1:
         hbd = Lipinski.NumHDonors(mol)
         hba = Lipinski.NumHAcceptors(mol)
 
-        # Structural Alert Analysis with MIE-Specific Domain Check
-        st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
         results = []
         for smarts, mie_data in smarts_mie_mapping.items():
             pattern = Chem.MolFromSmarts(smarts)
