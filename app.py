@@ -237,7 +237,13 @@ with tab1:
         else:
             st.info("No matching structural alerts found for the given molecule.")
 
-        # RDKit Fingerprint Calculation
+
+# Load the classifier model (add this part at the beginning of the script)
+import pickle
+with open("classifier.pkl", "rb") as f:
+    classifier = pickle.load(f)
+
+# RDKit Fingerprint Calculation
 st.subheader("RDKit Fingerprint Calculation:")
 rdkit_fp = RDKFingerprint(mol, fpSize=1024)
 
@@ -302,3 +308,4 @@ with tab3:
     st.header("About Us")
     developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
     st.write("Developed by:", ", ".join(developers))
+
