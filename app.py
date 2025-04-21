@@ -263,6 +263,18 @@ with tab1:
         # Display the selected fingerprints
         st.write("Selected Fingerprints (Named Bits and Values):")
         st.dataframe(fingerprint_df)
+        # Predict using the classifier
+        prediction = classifier.predict([selected_fingerprints])
+        prediction_prob = classifier.predict_proba([selected_fingerprints])
+
+        # Show prediction result
+        st.subheader("Prediction:")
+        if prediction[0] == 1:
+            st.success("Steatosis Likely")
+        else:
+            st.warning("Steatosis Unlikely")
+
+        st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
 
     else:
         st.info("Please enter a valid SMILES string.")
