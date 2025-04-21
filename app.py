@@ -146,33 +146,123 @@ smarts_mie_mapping = {
 
 # Create tabs
 tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
-# RDKit Fingerprint Calculation (with 1024 bits)
-st.subheader("RDKit Fingerprint Calculation:")
-# Using RDKit Fingerprint with 1024 bits
-rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+# Tab 1: Predictor
+with tab1:
+    st.title("Steatosis Predictor")
+    st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs) with MIE-specific chemical property domain assessment.")
 
-# Convert the fingerprint to a numpy array for easier manipulation
-fp_array = np.array(rdkit_fp)
+    # Input: SMILES string
+    smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
 
-# Create a DataFrame with fingerprint names (e.g., RDKit fingerprints0, RDKit fingerprints1, ...)
-fingerprint_names = [f"RDKit fingerprints{idx}" for idx in range(len(fp_array))]
-fingerprint_df = pd.DataFrame({
-    "Fingerprint Name": fingerprint_names,
-    "Bit Value": fp_array
-})
+    # Convert SMILES to RDKit Mol
+    mol = None
+    if smiles_input:
+        try:
+            mol = Chem.MolFromSmiles(smiles_input)
+            if mol is None:
+                st.error("Invalid SMILES input.")
+        except Exception as e:
+            st.error(f"Error processing SMILES: {e}")
 
-# Display the fingerprint as a DataFrame
-st.write("Fingerprint (Named Bits and Values):")
-st.dataframe(fingerprint_df)
+    if mol:
+        st.subheader("Molecule Structure")
+        st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-# Optionally display the fingerprint as a bit string
-fingerprint_str = "".join(str(bit) for bit in fp_array)
-st.write("Fingerprint (Bit String):")
-st.text(fingerprint_str)
+        # Property-based domain analysis
+        mw = Descriptors.MolWt(mol)
+        logp = Descriptors.MolLogP(mol)
+        hbd = Lipinski.NumHDonors(mol)
+        hba = Lipinski.NumHAcceptors(mol)
 
-# Optionally display the fingerprint as a numpy array
-st.write("Fingerprint (Numpy Array):")
-st.write(fp_array)
+        st.subheader("Structural Alert Analysis with MIE-Specific Domain Check:")
+        results = []
+        for smarts, mie_data in smarts_mie_mapping.items():
+            pattern = Chem.MolFromSmarts(smarts)
+            if mol.HasSubstructMatch(pattern):
+                for mie, data in mie_data.items():
+                    domain = data.get("Domain")
+                    within_domain = True
+                    formatted_domain = "Not Available"
+
+                    if domain:
+                        domain_strings = []
+                        for prop, (min_val, max_val) in domain.items():
+                            lower_bound = f">= {min_val}" if min_val is not None else ""
+                            upper_bound = f"<= {max_val}" if max_val is not None else ""
+                            range_str = ""
+                            if lower_bound and upper_bound:
+                                range_str = f"[{lower_bound}, {upper_bound}]"
+                            elif lower_bound:
+                                range_str = f"[{lower_bound}]"
+                            elif upper_bound:
+                                range_str = f"[{upper_bound}]"
+                            else:
+                                range_str = "No Limit"
+                            domain_strings.append(f"{prop}: {range_str}")
+                        formatted_domain = ", ".join(domain_strings)
+
+                        for prop, (min_val, max_val) in domain.items():
+                            mol_prop_value = None
+                            if prop == "MW":
+                                mol_prop_value = mw
+                            elif prop == "XLogP":
+                                mol_prop_value = logp
+                            elif prop == "HBD":
+                                mol_prop_value = hbd
+                            elif prop == "HBA":
+                                mol_prop_value = hba
+
+                            if mol_prop_value is not None:
+                                lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
+                                upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
+                                if not (lower_bound_met and upper_bound_met):
+                                    within_domain = False
+                            else:
+                                within_domain = False
+
+                    results.append({
+                        "SMARTS": smarts,
+                        "MIE": mie,
+                        "Domain": formatted_domain if domain else "Not Available",
+                        "Within Domain": "Yes" if within_domain else "No",
+                    })
+
+        if results:
+            st.subheader("Matching Alerts and MIE-Specific Domain Check:")
+            st.dataframe(results)
+        else:
+            st.info("No matching structural alerts found for the given molecule.")
+
+        # RDKit Fingerprint Calculation (with 1024 bits)
+        st.subheader("RDKit Fingerprint Calculation:")
+        # Using RDKit Fingerprint with 1024 bits
+        rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+
+        # Convert the fingerprint to a numpy array for easier manipulation
+        fp_array = np.array(rdkit_fp)
+
+        # Create a DataFrame with fingerprint names (e.g., RDKit fingerprints0, RDKit fingerprints1, ...)
+        fingerprint_names = [f"RDKit fingerprints{idx}" for idx in range(len(fp_array))]
+        fingerprint_df = pd.DataFrame({
+            "Fingerprint Name": fingerprint_names,
+            "Bit Value": fp_array
+        })
+
+        # Display the fingerprint as a DataFrame
+        st.write("Fingerprint (Named Bits and Values):")
+        st.dataframe(fingerprint_df)
+
+        # Optionally display the fingerprint as a bit string
+        fingerprint_str = "".join(str(bit) for bit in fp_array)
+        st.write("Fingerprint (Bit String):")
+        st.text(fingerprint_str)
+
+        # Optionally display the fingerprint as a numpy array
+        st.write("Fingerprint (Numpy Array):")
+        st.write(fp_array)
+
+    else:
+        st.info("Please enter a valid SMILES string.")
 
 # Tab 2: About
 with tab2:
