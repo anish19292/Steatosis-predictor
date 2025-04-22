@@ -252,7 +252,7 @@ with tab1:
 
             prediction = loaded_classifier.predict(input_df)
 
-            st.subheader("Prediction:")
+            st.subheader("Binary QSAR Prediction:")
             if prediction[0] == 1:
                 st.success("Steatosis Likely")
             else:
