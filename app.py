@@ -290,26 +290,27 @@ with tab2:
         """
     )
 
-# Tab 3: Contact
 with tab3:
     st.header("About Us")
     st.markdown(
         """
         <div style="font-size:16px; line-height:1.8">
-            <p><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
-            Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></p>
+        
+        <p><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
+        Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></p>
 
-            <p><strong>James Firman</strong> – Postdoctoral Researcher</p>
+        <p><strong>James Firman</strong> – Postdoctoral Researcher</p>
 
-            <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</p>
+        <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</p>
 
-            <p><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
-            Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></p>
+        <p><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
+        Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></p>
 
-            <p><strong>Affiliation:</strong><br>
-            School of Pharmacy and Biomolecular Sciences,<br>
-            Liverpool John Moores University,<br>
-            Byrom Street, Liverpool L3 3AF, United Kingdom</p>
+        <p><strong>Affiliation:</strong><br>
+        School of Pharmacy and Biomolecular Sciences,<br>
+        Liverpool John Moores University,<br>
+        Byrom Street, Liverpool L3 3AF, United Kingdom</p>
+
         </div>
         """,
         unsafe_allow_html=True
