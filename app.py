@@ -197,7 +197,6 @@ with tab1:
                             domain_strings.append(f"{prop}: {range_str}")
                         formatted_domain = ", ".join(domain_strings)
 
-                        # Checking if the molecule's properties fit within the domain
                         for prop, (min_val, max_val) in domain.items():
                             mol_prop_value = None
                             if prop == "MW":
@@ -224,58 +223,40 @@ with tab1:
                         "Within Domain": "Yes" if within_domain else "No",
                     })
 
-        # Display matching alerts and domain checks
         if results:
             st.subheader("Matching Alerts and MIE-Specific Domain Check:")
             st.dataframe(results)
         else:
             st.info("No matching structural alerts found for the given molecule.")
 
+        # ---- FINGERPRINTS & PREDICTION (only in Tab 1) ----
+        if loaded_classifier:
+            st.subheader("RDKit Fingerprint Calculation:")
+            rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+            fp_array = np.array(rdkit_fp)
 
-# Load the classifier model (add this part at the beginning of the script)
-import pickle
-with open("classifier.pkl", "rb") as f:
-    classifier = pickle.load(f)
+            fingerprint_names = [
+                "RDKit fingerprints93", "RDKit fingerprints204", "RDKit fingerprints292",
+                "RDKit fingerprints405", "RDKit fingerprints690", "RDKit fingerprints718", "RDKit fingerprints926"
+            ]
+            selected_fingerprints = [
+                fp_array[93], fp_array[204], fp_array[292],
+                fp_array[405], fp_array[690], fp_array[718], fp_array[926]
+            ]
 
-# Use the loaded classifier for predictions
-if loaded_classifier:
-    # RDKit Fingerprint Calculation
-    st.subheader("RDKit Fingerprint Calculation:")
-    rdkit_fp = RDKFingerprint(mol, fpSize=1024)
+            input_data = {name: value for name, value in zip(fingerprint_names, selected_fingerprints)}
+            input_df = pd.DataFrame([input_data])
 
-    # Convert the fingerprint to a numpy array for easier manipulation
-    fp_array = np.array(rdkit_fp)
+            st.write("Selected Fingerprints (Named Bits and Values):")
+            st.dataframe(input_df)
 
-    # Extract specific fingerprints (93, 204, 292, 405, 690, 718, 926 bits)
-    fingerprint_names = [
-        "RDKit fingerprints93", "RDKit fingerprints204", "RDKit fingerprints292", 
-        "RDKit fingerprints405", "RDKit fingerprints690", "RDKit fingerprints718", "RDKit fingerprints926"
-    ]
-    selected_fingerprints = [
-        fp_array[93], fp_array[204], fp_array[292], 
-        fp_array[405], fp_array[690], fp_array[718], fp_array[926]
-    ]
+            prediction = loaded_classifier.predict(input_df)
 
-    # Create a dictionary with feature names as keys and their corresponding values
-    input_data = {name: value for name, value in zip(fingerprint_names, selected_fingerprints)}
-
-    # Convert the dictionary to a DataFrame, as the model was trained on DataFrame input
-    input_df = pd.DataFrame([input_data])
-
-    # Display the selected fingerprints
-    st.write("Selected Fingerprints (Named Bits and Values):")
-    st.dataframe(input_df)
-
-    # Predict using the classifier (input is the DataFrame with the features)
-    prediction = loaded_classifier.predict(input_df)
-    prediction_prob = loaded_classifier.predict_proba(input_df)
-
-    # Show prediction result
-    st.subheader("Prediction:")
-    if prediction[0] == 1:
-        st.success("Steatosis Likely")
-    else:
-        st.warning("Steatosis Unlikely")
+            st.subheader("Prediction:")
+            if prediction[0] == 1:
+                st.success("Steatosis Likely")
+            else:
+                st.warning("Steatosis Unlikely")
 
 # Tab 2: About
 with tab2:
