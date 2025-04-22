@@ -288,7 +288,24 @@ with tab2:
         The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs). It also assesses if the input molecule falls within the defined chemical property domain for each identified alert.
 
         ### Molecular Initiating Events (MIEs)
-        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. More information can be found here (10.1021/acs.chemrestox.5b00480)
+        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. These often involve interaction with nuclear receptors that regulate gene expression related to lipid metabolism and inflammation.
+
+        #### Key Nuclear Receptors:
+
+        | Nuclear Receptor Name                          | Abbreviation | Nomenclature Identification |
+        |-----------------------------------------------|--------------|------------------------------|
+        | Aryl hydrocarbon receptor                      | AHR          | bHLHe76                      |
+        | Constitutive androstane receptor               | CAR          | NR1I3                        |
+        | Estrogen receptor                              | ER           | NR3A1/2                      |
+        | Farnesoid X receptor                           | FXR          | NR1H4/5                      |
+        | Glucocorticoid receptor                        | GR           | NR3C1                        |
+        | Liver X receptor                               | LXR          | NR1H2/3                      |
+        | Peroxisome proliferator-activated receptor     | PPAR         | NR1C1-3                      |
+        | Pregnane X receptor                            | PXR          | NR1I2                        |
+        | Retinoic acid receptor                         | RAR          | NR1B1-3                      |
+        | Retinoid X receptor                            | RXR          | —                            |
+
+        More information can be found here: [10.1021/acs.chemrestox.5b00480](https://doi.org/10.1021/acs.chemrestox.5b00480)
 
         ### Libraries Used
         - **Streamlit:** For creating the interactive web application.
@@ -296,7 +313,6 @@ with tab2:
         - **Pillow (PIL):** Implicitly used by Streamlit for image handling.
         """
     )
-
 # Tab 3: Contact
 with tab3:
     st.header("About Us")
