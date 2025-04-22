@@ -293,14 +293,3 @@ with tab3:
     st.header("About Us")
     developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
     st.write("Developed by:", ", ".join(developers))
-
-# Add Acknowledgement tab
-with tab4:
-    st.title("Acknowledgement")
-    st.write(
-        """
-        This project receives funding from the European Unions Horizon 2020 Research and Innovation programme under Grant Agreement No. 964537 (RISK-HUNT3R), 
-        and it is part of the ASPIS cluster.
-        """
-    )
-
