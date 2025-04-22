@@ -296,17 +296,15 @@ with tab3:
     st.markdown(
         """
         <div style="font-size:16px; line-height:1.8">
-            <ul style="list-style-type:none; padding-left:0;">
-                <li><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
-                Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></li>
+            <p><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
+            Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></p>
 
-                <li><strong>James Firman</strong> – Postdoctoral Researcher</li>
+            <p><strong>James Firman</strong> – Postdoctoral Researcher</p>
 
-                <li><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</li>
+            <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</p>
 
-                <li><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
-                Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></li>
-            </ul>
+            <p><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
+            Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></p>
 
             <p><strong>Affiliation:</strong><br>
             School of Pharmacy and Biomolecular Sciences,<br>
