@@ -297,11 +297,21 @@ with tab3:
         """
         <div style="font-size:16px; line-height:1.8">
             <ul style="list-style-type:none; padding-left:0;">
-                <li>👨‍🔬 <strong>Anish Gomatam</strong> – Postdoctoral Researcher</li>
-                <li>👨‍🔬 <strong>James Firman</strong> – Postdoctoral Researcher</li>
-                <li>👨‍🔬 <strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</li>
-                <li>👨‍🏫 <strong>Prof. Mark Cronin</strong> – Principal Investigator</li>
+                <li><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
+                Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></li>
+
+                <li><strong>James Firman</strong> – Postdoctoral Researcher</li>
+
+                <li><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</li>
+
+                <li><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
+                Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></li>
             </ul>
+
+            <p><strong>Affiliation:</strong><br>
+            School of Pharmacy and Biomolecular Sciences,<br>
+            Liverpool John Moores University,<br>
+            Byrom Street, Liverpool L3 3AF, United Kingdom</p>
         </div>
         """,
         unsafe_allow_html=True
