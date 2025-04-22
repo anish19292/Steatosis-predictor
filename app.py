@@ -287,6 +287,8 @@ with tab2:
         | Retinoid X receptor                            | RXR          | —                            |
 
         More information can be found here: [10.1021/acs.chemrestox.5b00480](https://doi.org/10.1021/acs.chemrestox.5b00480)
+        """
+    )
 
 # Tab 3: Contact
 with tab3:
@@ -303,3 +305,4 @@ with tab4:
         and it is part of the ASPIS cluster.
         """
     )
+
