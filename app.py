@@ -141,7 +141,7 @@ smarts_mie_mapping = {
 }
 
 # Create tabs
-tab1, tab2, tab3 = st.tabs(["Predictor", "About", "Contact"])
+tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 # Tab 1: Predictor
 with tab1:
     st.title("Steatosis Predictor")
