@@ -254,9 +254,9 @@ with tab1:
 
             st.subheader("Binary QSAR Prediction:")
             if prediction[0] == 1:
-                st.success("Steatosis Likely")
+                st.success("The given molecule is likely to be steatotic")
             else:
-                st.warning("Steatosis Unlikely")
+                st.warning("The given molecule is likely to be steatotic")
 
 # Tab 2: About
 with tab2:
