@@ -293,8 +293,19 @@ with tab2:
 # Tab 3: Contact
 with tab3:
     st.header("About Us")
-    developers = ["Anish Gomatam", "James Firman", "Georgios Chrysochoou", "Mark Cronin"]
-    st.write("Developed by:", ", ".join(developers))
+    st.markdown(
+        """
+        <div style="font-size:16px; line-height:1.8">
+            <ul style="list-style-type:none; padding-left:0;">
+                <li>👨‍🔬 <strong>Anish Gomatam</strong> – Postdoctoral Researcher</li>
+                <li>👨‍🔬 <strong>James Firman</strong> – Postdoctoral Researcher</li>
+                <li>👨‍🔬 <strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</li>
+                <li>👨‍🏫 <strong>Prof. Mark Cronin</strong> – Principal Investigator</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # Add Acknowledgement tab
 with tab4:
