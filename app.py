@@ -295,13 +295,15 @@ with tab3:
     st.markdown(
         """
         <div style="font-size:16px; line-height:1.8">
-        
+
         <p><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
         Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></p>
 
-        <p><strong>James Firman</strong> – Postdoctoral Researcher</p>
+        <p><strong>James Firman</strong> – Postdoctoral Researcher<br>
+        Email: <a href="mailto:J.W.Firman@ljmu.ac.uk">J.W.Firman@ljmu.ac.uk</a></p>
 
-        <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher</p>
+        <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher<br>
+        Email: <a href="mailto:G.Chrysochoou@ljmu.ac.uk">G.Chrysochoou@ljmu.ac.uk</a></p>
 
         <p><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
         Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></p>
