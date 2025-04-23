@@ -149,50 +149,6 @@ with col1:
 with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
 
-# Generate chemical structure images using RDKit
-def generate_structure_image(smiles, size=(150, 150)):
-    mol = Chem.MolFromSmiles(smiles)
-    img = Draw.MolToImage(mol, size=size)
-    return img
-
-# Example SMILES for two chemicals
-smiles_left = 'CCO'  # Ethanol
-smiles_right = 'CC(=O)O'  # Acetic acid
-
-# Create the chemical structure images
-left_img = generate_structure_image(smiles_left)
-right_img = generate_structure_image(smiles_right)
-
-# Add custom CSS for positioning the images at the top-left and top-right corners
-st.markdown(
-    """
-    <style>
-    .top-left {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 999;
-    }
-    .top-right {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 999;
-    }
-    </style>
-    """, 
-    unsafe_allow_html=True
-)
-
-# Display the images in the corners
-st.markdown('<div class="top-left">', unsafe_allow_html=True)
-st.image(left_img)  # Display the left-side chemical structure
-st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="top-right">', unsafe_allow_html=True)
-st.image(right_img)  # Display the right-side chemical structure
-st.markdown('</div>', unsafe_allow_html=True)
-
 # Then your tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 
