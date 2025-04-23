@@ -140,6 +140,15 @@ smarts_mie_mapping = {
     },
 }
 
+# Display logos at the top
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    st.image("LJMU image.gif", caption="Liverpool John Moores University", use_column_width=True)
+
+with col2:
+    st.image("risk-hunter-og.png", caption="RISK-HUNT3R Project", use_column_width=True)
+
 # Create tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 # Tab 1: Predictor
