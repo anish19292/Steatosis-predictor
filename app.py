@@ -140,8 +140,8 @@ smarts_mie_mapping = {
     },
 }
 
-# Create empty space columns on the sides and narrower image columns in the center
-spacer1, col1, spacer2, col2, spacer3 = st.columns([0.1, 0.4, 0.1, 0.4, 0.1])
+# Create empty space columns and set the image columns to be at the extreme ends
+spacer1, col1, spacer2, col2, spacer3 = st.columns([0.05, 0.4, 0.2, 0.4, 0.05])
 
 with col1:
     st.image("LJMU image.gif", use_column_width=True)
