@@ -140,17 +140,24 @@ smarts_mie_mapping = {
     },
 }
 
-# Display logos at the top
-col1, col2 = st.columns([1, 1])
-
-with col1:
-    st.image("LJMU image.gif", caption="Liverpool John Moores University", use_column_width=True)
-
-with col2:
-    st.image("risk-hunter-og.png", caption="RISK-HUNT3R Project", use_column_width=True)
+# Display logos aligned to left and right edges
+st.markdown(
+    """
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; text-align: left;">
+            <img src="LJMU image.gif" alt="LJMU Logo" style="max-width: 200px;">
+        </div>
+        <div style="flex: 1; text-align: right;">
+            <img src="risk-hunter-og.png" alt="RISK-HUNT3R Logo" style="max-width: 200px;">
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # Create tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
+
 # Tab 1: Predictor
 with tab1:
     st.title("Steatosis Predictor")
