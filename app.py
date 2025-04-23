@@ -140,16 +140,9 @@ smarts_mie_mapping = {
     },
 }
 
-# Create columns with large spacer widths on either side
-spacer1, col1, spacer2, col2 = st.columns([0.45, 0.1, 0.1, 0.45])
-
-# Image on the left side
-with col1:
-    st.image("LJMU image.gif", use_column_width=True)
-
-# Image on the right side
-with col2:
-    st.image("risk-hunter-og.png", use_column_width=True)
+# Display the images at the top of the page with some spacing
+st.image("LJMU image.gif", use_column_width=True)
+st.image("risk-hunter-og.png", use_column_width=True)
 
 # Then your tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
