@@ -140,22 +140,14 @@ smarts_mie_mapping = {
     },
 }
 
-# Display logos aligned to left and right edges
-st.markdown(
-    """
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div style="flex: 1; text-align: left;">
-            <img src="LJMU image.gif" alt="LJMU Logo" style="max-width: 200px;">
-        </div>
-        <div style="flex: 1; text-align: right;">
-            <img src="risk-hunter-og.png" alt="RISK-HUNT3R Logo" style="max-width: 200px;">
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Image section
+col1, col2 = st.columns([1, 1])
+with col1:
+    st.image("LJMU image.gif", use_column_width=True)
+with col2:
+    st.image("risk-hunter-og.png", use_column_width=True)
 
-# Create tabs
+# Then your tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 
 # Tab 1: Predictor
