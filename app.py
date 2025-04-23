@@ -140,12 +140,14 @@ smarts_mie_mapping = {
     },
 }
 
-# Create empty space columns and set the image columns to be at the extreme ends
-spacer1, col1, spacer2, col2, spacer3 = st.columns([0.05, 0.4, 0.2, 0.4, 0.05])
+# Create columns with large spacer widths on either side
+spacer1, col1, spacer2, col2 = st.columns([0.45, 0.1, 0.1, 0.45])
 
+# Image on the left side
 with col1:
     st.image("LJMU image.gif", use_column_width=True)
 
+# Image on the right side
 with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
 
