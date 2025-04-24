@@ -266,7 +266,7 @@ with tab1:
             if prediction[0] == 1:
                 st.success("The given molecule is likely to be steatotic")
             else:
-                st.warning("The given molecule is likely to be steatotic")
+                st.warning("The given molecule is unlikely to be steatotic")
 
 # Tab 2: About
 with tab2:
