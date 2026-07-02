@@ -243,7 +243,9 @@ with col1:
 with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
 
-tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["Predictor", "Alert Details", "About", "Contact", "Acknowledgement"]
+)
 
 # ---------------------------------------------------------------------------
 # Tab 1: Predictor
@@ -252,8 +254,8 @@ with tab1:
     st.title("Steatosis Structural Alert Profiler")
     st.write(
         "Enter a SMILES string to screen for structural alerts associated with hepatic "
-        "steatosis. Each alert is linked to a putative Molecular Initiating Event (MIE) "
-        "and, where established, the relevant Adverse Outcome Pathway(s) (AOPs)."
+        "steatosis. See the **Alert Details** tab for the full description, Molecular "
+        "Initiating Event (MIE) and relevant Adverse Outcome Pathway(s) (AOPs) for each alert."
     )
 
     smiles_input = st.text_input("Enter SMILES:", "CCCC(CCC)C(O)=O")
@@ -276,45 +278,51 @@ with tab1:
 
         if matches:
             st.subheader(f"{len(matches)} Matching Structural Alert(s)")
-            for alert in matches:
-                aop_lines = []
-                for aop_id in alert["aops"]:
-                    title = AOP_TITLES.get(aop_id, "")
-                    aop_lines.append(f"- **AOP {aop_id}** \u2013 {title} "
-                                      f"([aopwiki.org]({aop_link(aop_id)}))")
-                aop_text = "\n".join(aop_lines) if aop_lines else "_No AOP currently assigned in AOP-Wiki._"
-
-                with st.expander(f"Alert {alert['id']}: {alert['chemistry']}", expanded=True):
-                    st.markdown(f"**Molecular Initiating Event / MoA:** {alert['mie']}")
-                    st.markdown("**Relevant AOP(s):**")
-                    st.markdown(aop_text)
-                    st.markdown(f"**Description:** {alert['description']}")
-                    st.markdown(
-                        f"**Performance in curated dataset:** {alert['tp']} true positives, "
-                        f"{alert['fp']} false positives (precision = {alert['precision']:.2f})"
-                    )
-                    st.markdown(
-                        "**Example chemicals captured by this alert:** "
-                        + ", ".join(alert["examples"])
-                    )
-                    st.code(alert["smarts"], language="text")
-
-            summary_df = pd.DataFrame([{
+            results_df = pd.DataFrame([{
                 "Alert ID": a["id"],
                 "Chemistry": a["chemistry"],
                 "MIE": a["mie"],
                 "Relevant AOP(s)": ", ".join(a["aops"]) if a["aops"] else "-",
                 "Precision": a["precision"],
             } for a in matches])
-            st.subheader("Summary")
-            st.dataframe(summary_df, use_container_width=True)
+            st.dataframe(results_df, use_container_width=True, hide_index=True)
         else:
             st.info("No matching structural alerts found for the given molecule.")
 
 # ---------------------------------------------------------------------------
-# Tab 2: About
+# Tab 2: Alert Details
 # ---------------------------------------------------------------------------
 with tab2:
+    st.title("Structural Alert Details")
+    st.write(
+        "Full reference for the 12 structural alerts used by the Predictor, including "
+        "each alert's putative Molecular Initiating Event (MIE), relevant Adverse Outcome "
+        "Pathway(s) (AOPs), and SMARTS pattern."
+    )
+
+    for alert in ALERTS:
+        aop_lines = []
+        for aop_id in alert["aops"]:
+            title = AOP_TITLES.get(aop_id, "")
+            aop_lines.append(f"- **AOP {aop_id}** \u2013 {title} "
+                              f"([aopwiki.org]({aop_link(aop_id)}))")
+        aop_text = "\n".join(aop_lines) if aop_lines else "_No AOP currently assigned in AOP-Wiki._"
+
+        with st.expander(f"Alert {alert['id']}: {alert['chemistry']}"):
+            st.markdown(f"**Molecular Initiating Event / MoA:** {alert['mie']}")
+            st.markdown("**Relevant AOP(s):**")
+            st.markdown(aop_text)
+            st.markdown(f"**Description:** {alert['description']}")
+            st.markdown(
+                f"**Performance in curated dataset:** {alert['tp']} true positives, "
+                f"{alert['fp']} false positives (precision = {alert['precision']:.2f})"
+            )
+            st.code(alert["smarts"], language="text")
+
+# ---------------------------------------------------------------------------
+# Tab 3: About
+# ---------------------------------------------------------------------------
+with tab3:
     st.header("About the Steatosis Structural Alert Profiler")
     st.markdown(
         """
@@ -362,7 +370,7 @@ with tab2:
         """
     )
 
-with tab3:
+with tab4:
     st.header("About Us")
     st.markdown(
         """
@@ -390,7 +398,7 @@ with tab3:
         unsafe_allow_html=True
     )
 
-with tab4:
+with tab5:
     st.title("Acknowledgement")
     st.write(
         """
