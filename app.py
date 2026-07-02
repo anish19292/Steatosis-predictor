@@ -1,118 +1,118 @@
 import streamlit as st
 from rdkit import Chem
-from rdkit.Chem import Draw
-from rdkit.Chem import Descriptors
-from rdkit.Chem import Lipinski
+from rdkit.Chem import Draw, Descriptors, Lipinski, rdMolDescriptors
 import pandas as pd
 
-# Define SMARTS patterns and their associated MIEs with chemical property domains
-smarts_mie_mapping = {
-    "C(=C\\c1ccccc1)\c1ccccc1": {
-        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
-    },
-    "c1nc2ccccc2s1": {
-        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
-    },
-    "c1c*o*1": {
-        "AhR": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}},
-        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}}
-    },
-    "[#7,#6,#8,#16]1[#7,#6,#8,#16][#7,#6,#8,#16][#7,#6,#8,#16]([#7,#6,#8,#16]1)-c1ccccc1": {
-        "AhR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
-        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}},
-        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
-    },
-    "[#8,#7,#6]~1~[#8,#7,#6]~[#8,#7,#6]~c2ccccc2~[#8,#7,#6]~1": {
-        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
-    },
-    "[#6]-[#7]-c1ccccc1-[#9,#17]": {
-        "AhR": {"Domain": {"HBD": (0, 6), "MW": (180, 900), "HBA": (0, 10), "XLogP": (None, 8)}}
-    },
-    "*cS(=O)(=O)Nc*": {
-        "FXR": {"Domain": {"MW": (None, 900)}}
-    },
-    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~[#8])~[#6]~[#6]~[#6]~2~1": {
-        "FXR": {"Domain": {"MW": (None, 900)}}
-    },
-    "[#6]~1~[#6]~[#6]~[#6]2~[#6](~[#6]1)~[#6]~[#6]~[#6]1~[#6]~[#6](~*~*~*~*~*~[#8])~[#6]~[#6]~[#6]~2~1": {
-        "FXR": {"Domain": {"MW": (None, 900)}}
-    },
-    "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
-        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
-    },
-    "Cc1ccc(F)cc1C": {
-        "GR": {"Domain": {"HBD": (0, 15), "MW": (180, 610), "HBA": (0, 15), "XLogP": (-1, None)}}
-    },
-    "[#6]~1~[#6]~[#6](~[#6]~[#6]~[#8,#6,#7,#16]~1)-[#6]-c1ccccc1": {
-        "ER": {"Domain": {"HBD": (0, 10), "MW": (140, 700), "HBA": (0, 15), "XLogP": (-2, None)}}
-    },
-    "*C#N": {
-        "GR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}},
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
-    },
-    "[#6]~1~[#6]~[#6]~[#6]~[#6]~2~[#6]~3~[#6]~[#6]~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]12": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "c1ccccc1CC(F)(F)F": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaa1~*~*~*~*~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaa1~*~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaaa1~*~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaaa1~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaa1~*~*~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "a1aaaa1~*~*~c1ccccc1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "O~Ca1aaaa1": {
-        "LXR": {"Domain": {"MW": (None, 750), "XLogP": (2, None)}}
-    },
-    "C~1~C~C~C2~C(~C1)~C~C~C1~C~C~C~C~C~2~1": {
-        "PPAR": {"Domain": {"MW": (None, 800)}}
-    },
-    "c1nc2cncnc2n1": {
-        "PPAR": {"Domain": {"MW": (None, 800)}}
-    },
-    "a(a)a~*~*~a(a)a": {
-        "PPAR": {"Domain": {"MW": (None, 800)}}
-    },
-    "*~[#6]~*~[#6]~*~[#6]~*~[#6]a1a([O,Cl,F,I,Br,N*])aaaa1": {
-        "PPAR": {"Domain": {"MW": (None, 800)}}
-    },
-    "[#6]~*~[#6]~*~[#6]~*~[#6]~*~a1a([O,Cl,F,I,Br,N*])aaaa1": {
-        "PPAR": {"Domain": {"MW": (None, 800)}}
-    },
-    "[#6]1~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~2~[#6]~[#6]~[#6]2~[#6]~[#6]~[#6]~[#6]~3~2)~[#6]~[#6]~1": {
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
-    },
-    "O~[#6]1~[#6]~[#6]~[#6]2~[#6](~[#6]~[#6]~[#6]3~[#6]~[#6]~[#6]~[#6]~[#6]~23)~[#6]~1": {
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
-    },
-    "[#8,#6,#7,#16]~1~[#8,#6,#7,#16]~[#8,#6,#7,#16]~[#6](~[#8,#6,#7,#16]~[#8,#6,#7,#16]~1)-[#7,#8,#6,#16]-c1ccccc1": {
-        "PXR": {"Domain": {"HBD": (0, 15), "MW": (300, 610), "HBA": (0, 10), "XLogP": (0, None)}}
-   
-    },
-    "O~[#6]~[#6]~[#7]~[#6]": {
-        "RAR": {"Domain": {"MW": (None, 550)}}
-    },
-    "*[#6](~[#8])~[#6](~[#8])*": {
-        "RAR": {"Domain": {"MW": (None, 550)}}
-    },
+# ---------------------------------------------------------------------------
+# Overall chemical property domain of the profiler (Table S3B, Supporting Info)
+# ---------------------------------------------------------------------------
+PROPERTY_DOMAIN = {
+    "Hydrogen Bond Acceptors": (0, 18),
+    "Hydrogen Bond Donors": (0, 13),
+    "Rotatable Bonds Count": (0, 22),
+    "Topological Polar Surface Area": (0, 331.94),
+    "Molecular Weight": (54.05, 923.49),
+    "XLogP": (-6.56, 8.83),
 }
 
-# Create empty space columns and set the image columns to be at the extreme ends
+def compute_properties(mol):
+    return {
+        "Hydrogen Bond Acceptors": Lipinski.NumHAcceptors(mol),
+        "Hydrogen Bond Donors": Lipinski.NumHDonors(mol),
+        "Rotatable Bonds Count": Lipinski.NumRotatableBonds(mol),
+        "Topological Polar Surface Area": rdMolDescriptors.CalcTPSA(mol),
+        "Molecular Weight": Descriptors.MolWt(mol),
+        "XLogP": Descriptors.MolLogP(mol),
+    }
+
+# ---------------------------------------------------------------------------
+# The 12 refined structural alerts for hepatic steatosis (Table S5, Supporting Info)
+# ---------------------------------------------------------------------------
+ALERTS = [
+    {
+        "id": "1", "chemistry": "Aryloxyphenoxypropionate derivatives",
+        "smarts": r"[cx2]1[cx2][cx2]([Ax0]*2*****2)[cx2][cx2][cx2]1[Ax0][Ax0][Ax0](=O)[Ax0]",
+        "mie": "Activation of PPAR-\u03b3 and PPAR-\u03b1",
+        "aops": ["529"], "precision": 1.0,
+    },
+    {
+        "id": "2", "chemistry": "N-substituted triazoles (azole antifungals)",
+        "smarts": r"[Cx0]([*][*])n1[cx2,nx2][nX2][nx2,cx2][nx2,cx2]1",
+        "mie": "PXR activation",
+        "aops": ["60"], "precision": 0.95,
+    },
+    {
+        "id": "3", "chemistry": "Branched alkyl carboxylic acids",
+        "smarts": r"[C;x0][C;x0][C;x0][C;x0]([C;x0][C;x0])[C;x0](=O)[O;x0]",
+        "mie": "Modulation of PPAR signalling",
+        "aops": ["529"], "precision": 1.0,
+    },
+    {
+        "id": "4", "chemistry": "Nucleoside analogues",
+        "smarts": r"C([Cx0][Ox0])AC~[#7;x2][#6;x2][#7;x2]",
+        "mie": "Inhibition of mitochondrial DNA polymerase",
+        "aops": [], "precision": 0.80,
+    },
+    {
+        "id": "5", "chemistry": "Amide-linked aromatic and polar rings (SDHIs)",
+        "smarts": r"[cx2,nx2]1[cx2,nx2][cx2,nx2][cx2,nx2][cx2,nx2]1~[#6x0]~[#7x0]~c1ccccc1",
+        "mie": "PXR activation",
+        "aops": ["60"], "precision": 1.0,
+    },
+    {
+        "id": "6", "chemistry": "Biaryl structures with a carbon linker",
+        "smarts": r"[cx2]1[cx2][cx2][cx2][cx2][cx2]1-[C;x0](~[*])-[cx2]1[cx2][cx2][cx2][cx2][cx2]1",
+        "mie": "Interaction with ER, AR, PXR and CAR",
+        "aops": ["58", "60"], "precision": 1.0,
+    },
+    {
+        "id": "7", "chemistry": "Pyrethroids",
+        "smarts": r"[cx2]1[cx2][cx2]([Ax0]*2*****2)[cx2][cx2]([Cx0]([Ox0](C(=O)C3CC3)))[cx2]1",
+        "mie": "Modulation of AMPK and FXR\u2013PPAR-\u03b1\u2013CPT1 pathways",
+        "aops": ["61", "529"], "precision": 1.0,
+    },
+    {
+        "id": "8a", "chemistry": "Cationic amphiphilic structures",
+        "smarts": r"c1cc([Cx0]c)ccc1[Ax0][Ax0][Ax0]N(C)C",
+        "mie": "Dysregulation of AR, HNF4\u03b1, RXR, NR2F1 and PPAR-\u03b1",
+        "aops": ["529"], "precision": 1.0,
+    },
+    {
+        "id": "8b", "chemistry": "Cationic amphiphilic structures (tricyclic psychotropics)",
+        "smarts": r"[ax2]1[ax2][ax2][ax2][*x3]~2~[*]~[*](~[*x3]~[*x3]~[*x2]~[*x3]12)[A]~[A]~[A]~[NX3](C)C",
+        "mie": "Multiple mechanisms reported",
+        "aops": ["34", "518", "529"], "precision": 1.0,
+    },
+    {
+        "id": "9", "chemistry": "Phenylureas and N-benzoyl-N'-phenylureas",
+        "smarts": r"[ax2]1[ax2][ax2][ax2]([N;x0][C;x0](=O)[N;x0]([#6]))[ax2][ax2]1",
+        "mie": "PPAR-\u03b3 agonism",
+        "aops": ["529"], "precision": 0.57,
+    },
+    {
+        "id": "10", "chemistry": "Oxadiazoles",
+        "smarts": r"[cx2]1[cx2][cx2][cx2][cx2][cx2]1[*x2]2~[*x2](~[AX1])~[*x2]~[*x2](~[A]~[A])~[*x2]~2",
+        "mie": "Unclear at present",
+        "aops": [], "precision": 0.50,
+    },
+    {
+        "id": "11", "chemistry": "Corticosteroids",
+        "smarts": (
+            r"O=[C!R]([A]1-,=[$([A]~[AD])]2-,=[A](-,=[A]-,=[A]-,=1)-,=[A]1-,=[A]"
+            r"(-,=[A]3-,=[A](-,=[A]-,=[$(C~O)]-,=[A]-,=[A]-,=3)-,=[A]-,=[A]-,=1)"
+            r"-,=[$([A]~[AD])]-,=[A]-,=2)[A!R]"
+        ),
+        "mie": "Glucocorticoid receptor (GR) activation",
+        "aops": [], "precision": 1.0,
+    },
+]
+
+for alert in ALERTS:
+    alert["pattern"] = Chem.MolFromSmarts(alert["smarts"])
+
+# ---------------------------------------------------------------------------
+# Layout
+# ---------------------------------------------------------------------------
 spacer1, col1, spacer2, col2, spacer3 = st.columns([0.05, 0.4, 0.2, 0.4, 0.05])
 
 with col1:
@@ -121,18 +121,20 @@ with col1:
 with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
 
-# Then your tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 
+# ---------------------------------------------------------------------------
 # Tab 1: Predictor
+# ---------------------------------------------------------------------------
 with tab1:
-    st.title("Steatosis Predictor")
-    st.write("Enter a SMILES string to check for steatosis structural alerts and their associated Molecular Initiating Events (MIEs) with MIE-specific chemical property domain assessment.")
+    st.title("Steatosis Profiler")
+    st.write(
+        "Enter a SMILES string to check the chemical property domain and screen for "
+        "structural alerts associated with hepatic steatosis."
+    )
 
-    # Input: SMILES string
-    smiles_input = st.text_input("Enter SMILES:", "CC1CCCCC1")
+    smiles_input = st.text_input("Enter SMILES:", "CCCC(CCC)C(O)=O")
 
-    # Convert SMILES to RDKit Mol
     mol = None
     if smiles_input:
         try:
@@ -143,86 +145,80 @@ with tab1:
             st.error(f"Error processing SMILES: {e}")
 
     if mol:
-        # Display the molecule structure
         st.subheader("Molecule Structure")
         st.image(Draw.MolToImage(mol, size=(300, 300)))
 
-        # Property-based domain analysis
-        mw = Descriptors.MolWt(mol)
-        logp = Descriptors.MolLogP(mol)
-        hbd = Lipinski.NumHDonors(mol)
-        hba = Lipinski.NumHAcceptors(mol)
+        # -------------------------------------------------------------
+        # Chemical property domain check
+        # -------------------------------------------------------------
+        st.subheader("Chemical Property Domain Check")
+        props = compute_properties(mol)
+        overall_within = True
+        domain_rows = []
+        for prop, (lo, hi) in PROPERTY_DOMAIN.items():
+            val = props[prop]
+            within = lo <= val <= hi
+            if not within:
+                overall_within = False
+            domain_rows.append({
+                "Property": prop,
+                "Value": round(val, 2),
+                "Domain Min": lo,
+                "Domain Max": hi,
+                "Within Domain": "Yes" if within else "No",
+            })
+        st.dataframe(domain_rows)
+        st.markdown(f"**Within property domain:** {'Yes' if overall_within else 'No'}")
 
-        results = []
-        for smarts, mie_data in smarts_mie_mapping.items():
-            pattern = Chem.MolFromSmarts(smarts)
-            if mol.HasSubstructMatch(pattern):
-                for mie, data in mie_data.items():
-                    domain = data.get("Domain")
-                    within_domain = True
-                    formatted_domain = "Not Available"
+        # -------------------------------------------------------------
+        # Structural alert screening
+        # -------------------------------------------------------------
+        st.subheader("Structural Alert Screening")
+        matches = [a for a in ALERTS if a["pattern"] is not None
+                   and mol.HasSubstructMatch(a["pattern"])]
 
-                    if domain:
-                        domain_strings = []
-                        for prop, (min_val, max_val) in domain.items():
-                            lower_bound = f">= {min_val}" if min_val is not None else ""
-                            upper_bound = f"<= {max_val}" if max_val is not None else ""
-                            range_str = ""
-                            if lower_bound and upper_bound:
-                                range_str = f"[{lower_bound}, {upper_bound}]"
-                            elif lower_bound:
-                                range_str = f"[{lower_bound}]"
-                            elif upper_bound:
-                                range_str = f"[{upper_bound}]"
-                            else:
-                                range_str = "No Limit"
-                            domain_strings.append(f"{prop}: {range_str}")
-                        formatted_domain = ", ".join(domain_strings)
-
-                        for prop, (min_val, max_val) in domain.items():
-                            mol_prop_value = None
-                            if prop == "MW":
-                                mol_prop_value = mw
-                            elif prop == "XLogP":
-                                mol_prop_value = logp
-                            elif prop == "HBD":
-                                mol_prop_value = hbd
-                            elif prop == "HBA":
-                                mol_prop_value = hba
-
-                            if mol_prop_value is not None:
-                                lower_bound_met = (min_val is None) or (mol_prop_value >= min_val)
-                                upper_bound_met = (max_val is None) or (mol_prop_value <= max_val)
-                                if not (lower_bound_met and upper_bound_met):
-                                    within_domain = False
-                            else:
-                                within_domain = False
-
-                    results.append({
-                        "SMARTS": smarts,
-                        "MIE": mie,
-                        "Domain": formatted_domain if domain else "Not Available",
-                        "Within Domain": "Yes" if within_domain else "No",
-                    })
-
-        if results:
-            st.subheader("Matching Alerts and MIE-Specific Domain Check:")
-            st.dataframe(results)
+        if matches:
+            results_table = pd.DataFrame([{
+                "Chemistry": a["chemistry"],
+                "SMARTS": a["smarts"],
+                "MIE": a["mie"],
+                "AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
+                "Precision": a["precision"],
+            } for a in matches])
+            st.dataframe(results_table, use_container_width=True)
+            st.warning(
+                "Results indicate that this chemical may have potential to induce steatosis."
+            )
         else:
-            st.info("No matching structural alerts found for the given molecule.")
+            st.success("No structural alerts matched. Okay.")
 
+# ---------------------------------------------------------------------------
 # Tab 2: About
+# ---------------------------------------------------------------------------
 with tab2:
-    st.header("About Steatosis Predictor")
+    st.header("About Steatosis Profiler")
     st.markdown(
         """
         ### Purpose
-        Steatosis Predictor queries a set of refined structural alerts, encoded as SMARTS patterns, to predict likelihood of steatosis.
+        Steatosis Profiler checks whether a query chemical falls within the chemical
+        property domain of the underlying dataset, and screens it against 12 refined
+        structural alerts, encoded as SMARTS patterns, indicative of hepatic steatosis.
 
-        The application checks if the SMILES input format contains any of the predefined SMARTS patterns associated with potential steatosis-related Molecular Initiating Events (MIEs). It also assesses if the input molecule falls within the defined chemical property domain for each identified alert.
+        Each alert is linked to a putative Molecular Initiating Event (MIE) and, where
+        established, the relevant Adverse Outcome Pathway(s) (AOPs).
 
-        ### Molecular Initiating Events (MIEs)
-        The MIEs listed are based on current scientific understanding and literature linking specific structural features to the initiation of biological events relevant to steatosis. These often involve interaction with nuclear receptors that regulate gene expression related to lipid metabolism and inflammation.
+        ### Chemical Property Domain
+        The domain check compares the query molecule against the overall chemical space
+        of the curated dataset used to develop the alerts (1,378 substances), based on six
+        properties: hydrogen bond acceptors, hydrogen bond donors, rotatable bond count,
+        topological polar surface area, molecular weight, and XLogP.
+
+        ### Molecular Initiating Events (MIEs) and Adverse Outcome Pathways (AOPs)
+        As critical regulators of lipid accumulation and metabolism, nuclear receptors play
+        a key role in the onset and progression of steatosis. Several AOPs link modulation
+        of these receptors to hepatic lipid and triglyceride accumulation, including AOPs
+        for PPAR (e.g. AOP 529), PXR (AOP 60), CAR (AOP 58), FXR (AOP 61) and LXR
+        (AOPs 34/518).
 
         #### Key Nuclear Receptors:
 
@@ -237,7 +233,7 @@ with tab2:
         | Peroxisome proliferator-activated receptor     | PPAR         | NR1C1-3                      |
         | Pregnane X receptor                            | PXR          | NR1I2                        |
         | Retinoic acid receptor                         | RAR          | NR1B1-3                      |
-        | Retinoid X receptor                            | RXR          | —                            |
+        | Retinoid X receptor                            | RXR          | \u2014                            |
 
         More information can be found here: [10.1021/acs.chemrestox.5b00480](https://doi.org/10.1021/acs.chemrestox.5b00480)
         """
@@ -249,16 +245,16 @@ with tab3:
         """
         <div style="font-size:16px; line-height:1.8">
 
-        <p><strong>Anish Gomatam</strong> – Postdoctoral Researcher<br>
+        <p><strong>Anish Gomatam</strong> \u2013 Postdoctoral Researcher<br>
         Email: <a href="mailto:A.Gomatam@ljmu.ac.uk">A.Gomatam@ljmu.ac.uk</a></p>
 
-        <p><strong>James Firman</strong> – Postdoctoral Researcher<br>
+        <p><strong>James Firman</strong> \u2013 Postdoctoral Researcher<br>
         Email: <a href="mailto:J.W.Firman@ljmu.ac.uk">J.W.Firman@ljmu.ac.uk</a></p>
 
-        <p><strong>Georgios Chrysochoou</strong> – Postdoctoral Researcher<br>
+        <p><strong>Georgios Chrysochoou</strong> \u2013 Postdoctoral Researcher<br>
         Email: <a href="mailto:G.Chrysochoou@ljmu.ac.uk">G.Chrysochoou@ljmu.ac.uk</a></p>
 
-        <p><strong>Prof. Mark Cronin</strong> – Principal Investigator<br>
+        <p><strong>Prof. Mark Cronin</strong> \u2013 Principal Investigator<br>
         Email: <a href="mailto:M.T.Cronin@ljmu.ac.uk">M.T.Cronin@ljmu.ac.uk</a></p>
 
         <p><strong>Affiliation:</strong><br>
@@ -271,12 +267,12 @@ with tab3:
         unsafe_allow_html=True
     )
 
-# Add Acknowledgement tab
 with tab4:
     st.title("Acknowledgement")
     st.write(
         """
-        This project receives funding from the European Union's Horizon 2020 Research and Innovation programme under Grant Agreement No. 964537 (RISK-HUNT3R), 
+        This project receives funding from the European Union's Horizon 2020 Research and
+        Innovation programme under Grant Agreement No. 964537 (RISK-HUNT3R),
         and it is part of the ASPIS cluster.
         """
     )
