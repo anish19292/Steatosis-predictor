@@ -188,7 +188,10 @@ if page == "Profiler":
                 "Within Domain": "Yes" if within else "No",
             })
         st.dataframe(domain_rows)
-        st.markdown(f"**Within property domain:** {'Yes' if overall_within else 'No'}")
+        if overall_within:
+            st.success("Within property domain: Yes")
+        else:
+            st.error("Within property domain: No")
 
         # -------------------------------------------------------------
         # Structural alert screening
