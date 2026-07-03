@@ -110,16 +110,28 @@ ALERTS = [
 for alert in ALERTS:
     alert["pattern"] = Chem.MolFromSmarts(alert["smarts"])
 
+def format_precision(value):
+    """Whole-number precisions display without decimals; others show 2 dp."""
+    if float(value).is_integer():
+        return f"{int(value)}"
+    return f"{value:.2f}"
+
 # ---------------------------------------------------------------------------
 # Layout
 # ---------------------------------------------------------------------------
-spacer1, col1, spacer2, col2, spacer3 = st.columns([0.05, 0.4, 0.2, 0.4, 0.05])
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.image("LJMU image.gif", use_column_width=True)
 
 with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
+
+with col3:
+    st.image("quantumtox.png", use_column_width=True)
+
+with col4:
+    st.image("ASPIS.png", use_column_width=True)
 
 tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
 
@@ -193,7 +205,7 @@ with tab1:
                 "SMARTS": a["smarts"],
                 "MIE": a["mie"],
                 "AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
-                "Precision": f"{a['precision']:.2f}",
+                "Precision": format_precision(a['precision']),
             } for a in matches])
             st.dataframe(results_table, use_container_width=True)
             st.warning(
@@ -235,7 +247,7 @@ with tab2:
         "Chemistry": a["chemistry"],
         "Putative Mechanism of Action": a["mie"],
         "Relevant AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
-        "Precision": f"{a['precision']:.2f}",
+        "Precision": format_precision(a['precision']),
     } for a in ALERTS])
     st.dataframe(overview_table, use_container_width=True)
 
@@ -271,8 +283,12 @@ with tab4:
     st.title("Acknowledgement")
     st.write(
         """
-        This project receives funding from the European Union's Horizon 2020 Research and
-        Innovation programme under Grant Agreement No. 964537 (RISK-HUNT3R),
-        and it is part of the ASPIS cluster.
+        This work was supported by the project RISK-HUNT3R: RISK assessment of chemicals
+        integrating human centric Next generation Testing strategies promoting the 3Rs.
+        RISK-HUNT3R has received funding from the European Union's Horizon 2020 research
+        and innovation programme under grant agreement No 964537 and is part of the ASPIS
+        cluster; and QUANTUM-TOX \u2013 Revolutionizing Computational Toxicology with
+        Electronic Structure Descriptors and Artificial Intelligence (QUANTUM-TOX)
+        HORIZON-EIC-2023-PATHFINDEROPEN-01 Project number: 101130724.
         """
     )
