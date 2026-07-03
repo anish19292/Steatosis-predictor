@@ -153,6 +153,8 @@ with tab1:
         # -------------------------------------------------------------
         st.subheader("Chemical Property Domain Check")
         props = compute_properties(mol)
+        integer_properties = {"Hydrogen Bond Acceptors", "Hydrogen Bond Donors",
+                               "Rotatable Bonds Count"}
         overall_within = True
         domain_rows = []
         for prop, (lo, hi) in PROPERTY_DOMAIN.items():
@@ -160,11 +162,19 @@ with tab1:
             within = lo <= val <= hi
             if not within:
                 overall_within = False
+            if prop in integer_properties:
+                value_str = f"{val:.0f}"
+                lo_str = f"{lo:.0f}"
+                hi_str = f"{hi:.0f}"
+            else:
+                value_str = f"{val:.2f}"
+                lo_str = f"{lo:.2f}"
+                hi_str = f"{hi:.2f}"
             domain_rows.append({
                 "Property": prop,
-                "Value": round(val, 2),
-                "Domain Min": lo,
-                "Domain Max": hi,
+                "Value": value_str,
+                "Domain Min": lo_str,
+                "Domain Max": hi_str,
                 "Within Domain": "Yes" if within else "No",
             })
         st.dataframe(domain_rows)
@@ -183,14 +193,14 @@ with tab1:
                 "SMARTS": a["smarts"],
                 "MIE": a["mie"],
                 "AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
-                "Precision": a["precision"],
+                "Precision": f"{a['precision']:.2f}",
             } for a in matches])
             st.dataframe(results_table, use_container_width=True)
             st.warning(
                 "Results indicate that this chemical may have potential to induce steatosis."
             )
         else:
-            st.success("No structural alerts matched. Okay.")
+            st.success("No matching structural alerts found for the given query chemical.")
 
 # ---------------------------------------------------------------------------
 # Tab 2: About
@@ -206,10 +216,34 @@ with tab2:
 
         Each alert is linked to a putative Molecular Initiating Event (MIE) and, where
         established, the relevant Adverse Outcome Pathway(s) (AOPs).
+        """
+    )
 
+    st.markdown("### Development")
+    st.image("workflow_schematic.png", use_column_width=True)
+    st.markdown(
+        """
+        This profiler was developed using rules derived from Molecular Initiating Events
+        (MIEs) linked to steatosis and fragments generated using SARpy, which were then
+        refined using expert judgement.
+        """
+    )
+
+    st.markdown("### Overview of Alerts within Profiler")
+    overview_table = pd.DataFrame([{
+        "Alert ID": a["id"],
+        "Chemistry": a["chemistry"],
+        "Putative Mechanism of Action": a["mie"],
+        "Relevant AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
+        "Precision": f"{a['precision']:.2f}",
+    } for a in ALERTS])
+    st.dataframe(overview_table, use_container_width=True, hide_index=True)
+
+    st.markdown(
+        """
         ### Chemical Property Domain
         The domain check compares the query molecule against the overall chemical space
-        of the curated dataset used to develop the alerts (1,378 substances), based on six
+        of the curated dataset used to develop the alerts (264 chemicals), based on six
         properties: hydrogen bond acceptors, hydrogen bond donors, rotatable bond count,
         topological polar surface area, molecular weight, and XLogP.
 
