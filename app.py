@@ -207,10 +207,15 @@ if page == "Profiler":
             } for a in matches])
             st.dataframe(results_table, use_container_width=True)
             st.warning(
-                "Results indicate that this chemical may have potential to induce steatosis."
+                "Results indicate that this chemical may be steatogenic. "
+                "Further investigation recommended."
             )
         else:
-            st.success("No matching structural alerts found for the given query chemical.")
+            st.success(
+                "Results indicate that this chemical may not be steatogenic. "
+                "However, it is recommended that additional evidence is sought to "
+                "inform decision-making."
+            )
 
 # ---------------------------------------------------------------------------
 # About
