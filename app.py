@@ -237,41 +237,7 @@ with tab2:
         "Relevant AOP/s": ", ".join(a["aops"]) if a["aops"] else "-",
         "Precision": f"{a['precision']:.2f}",
     } for a in ALERTS])
-    st.dataframe(overview_table, use_container_width=True, hide_index=True)
-
-    st.markdown(
-        """
-        ### Chemical Property Domain
-        The domain check compares the query molecule against the overall chemical space
-        of the curated dataset used to develop the alerts (264 chemicals), based on six
-        properties: hydrogen bond acceptors, hydrogen bond donors, rotatable bond count,
-        topological polar surface area, molecular weight, and XLogP.
-
-        ### Molecular Initiating Events (MIEs) and Adverse Outcome Pathways (AOPs)
-        As critical regulators of lipid accumulation and metabolism, nuclear receptors play
-        a key role in the onset and progression of steatosis. Several AOPs link modulation
-        of these receptors to hepatic lipid and triglyceride accumulation, including AOPs
-        for PPAR (e.g. AOP 529), PXR (AOP 60), CAR (AOP 58), FXR (AOP 61) and LXR
-        (AOPs 34/518).
-
-        #### Key Nuclear Receptors:
-
-        | Nuclear Receptor Name                          | Abbreviation | Nomenclature Identification |
-        |-----------------------------------------------|--------------|------------------------------|
-        | Aryl hydrocarbon receptor                      | AHR          | bHLHe76                      |
-        | Constitutive androstane receptor               | CAR          | NR1I3                        |
-        | Estrogen receptor                              | ER           | NR3A1/2                      |
-        | Farnesoid X receptor                           | FXR          | NR1H4/5                      |
-        | Glucocorticoid receptor                        | GR           | NR3C1                        |
-        | Liver X receptor                               | LXR          | NR1H2/3                      |
-        | Peroxisome proliferator-activated receptor     | PPAR         | NR1C1-3                      |
-        | Pregnane X receptor                            | PXR          | NR1I2                        |
-        | Retinoic acid receptor                         | RAR          | NR1B1-3                      |
-        | Retinoid X receptor                            | RXR          | \u2014                            |
-
-        More information can be found here: [10.1021/acs.chemrestox.5b00480](https://doi.org/10.1021/acs.chemrestox.5b00480)
-        """
-    )
+    st.dataframe(overview_table, use_container_width=True)
 
 with tab3:
     st.header("About Us")
