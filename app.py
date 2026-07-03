@@ -131,12 +131,12 @@ with st.sidebar:
         st.image("ASPIS.png", use_column_width=True)
 
     st.markdown("---")
-    page = st.radio("Navigation", ["Predictor", "About", "Contact", "Acknowledgement"])
+    page = st.radio("Navigation", ["Profiler", "About", "Contact", "Acknowledgement"])
 
 # ---------------------------------------------------------------------------
-# Predictor
+# Profiler
 # ---------------------------------------------------------------------------
-if page == "Predictor":
+if page == "Profiler":
     st.title("Steatosis Profiler")
     st.write(
         "Enter a SMILES string to check the chemical property domain and screen for "
@@ -236,6 +236,10 @@ elif page == "About":
         This profiler was developed using rules derived from Molecular Initiating Events
         (MIEs) linked to steatosis and fragments generated using SARpy, which were then
         refined using expert judgement.
+
+        The manuscript describing the profiler is currently under revision. Associated
+        (meta)data can be found on Zenodo:
+        [10.5281/zenodo.20236679](https://doi.org/10.5281/zenodo.20236679).
         """
     )
 
