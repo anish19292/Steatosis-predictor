@@ -3,6 +3,8 @@ from rdkit import Chem
 from rdkit.Chem import Draw, Descriptors, Lipinski, rdMolDescriptors
 import pandas as pd
 
+st.set_page_config(page_title="Steatosis Profiler", layout="wide")
+
 # ---------------------------------------------------------------------------
 # Overall chemical property domain of the profiler (Table S3B, Supporting Info)
 # ---------------------------------------------------------------------------
@@ -117,28 +119,24 @@ def format_precision(value):
     return f"{value:.2f}"
 
 # ---------------------------------------------------------------------------
-# Layout
+# Layout: left sidebar navigation
 # ---------------------------------------------------------------------------
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
+with st.sidebar:
     st.image("LJMU image.gif", use_column_width=True)
-
-with col2:
     st.image("risk-hunter-og.png", use_column_width=True)
+    logo_col1, logo_col2 = st.columns(2)
+    with logo_col1:
+        st.image("quantumtox.png", use_column_width=True)
+    with logo_col2:
+        st.image("ASPIS.png", use_column_width=True)
 
-with col3:
-    st.image("quantumtox.png", use_column_width=True)
-
-with col4:
-    st.image("ASPIS.png", use_column_width=True)
-
-tab1, tab2, tab3, tab4 = st.tabs(["Predictor", "About", "Contact", "Acknowledgement"])
+    st.markdown("---")
+    page = st.radio("Navigation", ["Predictor", "About", "Contact", "Acknowledgement"])
 
 # ---------------------------------------------------------------------------
-# Tab 1: Predictor
+# Predictor
 # ---------------------------------------------------------------------------
-with tab1:
+if page == "Predictor":
     st.title("Steatosis Profiler")
     st.write(
         "Enter a SMILES string to check the chemical property domain and screen for "
@@ -215,9 +213,9 @@ with tab1:
             st.success("No matching structural alerts found for the given query chemical.")
 
 # ---------------------------------------------------------------------------
-# Tab 2: About
+# About
 # ---------------------------------------------------------------------------
-with tab2:
+elif page == "About":
     st.header("About Steatosis Profiler")
     st.markdown(
         """
@@ -251,7 +249,7 @@ with tab2:
     } for a in ALERTS])
     st.dataframe(overview_table, use_container_width=True)
 
-with tab3:
+elif page == "Contact":
     st.header("About Us")
     st.markdown(
         """
@@ -279,7 +277,7 @@ with tab3:
         unsafe_allow_html=True
     )
 
-with tab4:
+elif page == "Acknowledgement":
     st.title("Acknowledgement")
     st.write(
         """
