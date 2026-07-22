@@ -53,7 +53,7 @@ ALERTS = [
         "id": "4", "chemistry": "Nucleoside analogues",
         "smarts": r"C([Cx0][Ox0])AC~[#7;x2][#6;x2][#7;x2]",
         "mie": "Inhibition of mitochondrial DNA polymerase",
-        "aops": [], "precision": 0.80,
+        "aops": [], "precision": 0.86,
     },
     {
         "id": "5", "chemistry": "Amide-linked aromatic and polar rings (SDHIs)",
@@ -95,7 +95,7 @@ ALERTS = [
         "id": "10", "chemistry": "Oxadiazoles",
         "smarts": r"[cx2]1[cx2][cx2][cx2][cx2][cx2]1[*x2]2~[*x2](~[AX1])~[*x2]~[*x2](~[A]~[A])~[*x2]~2",
         "mie": "Unclear at present",
-        "aops": [], "precision": 0.50,
+        "aops": [], "precision": 1.0,
     },
     {
         "id": "11", "chemistry": "Corticosteroids",
@@ -105,7 +105,7 @@ ALERTS = [
             r"-,=[$([A]~[AD])]-,=[A]-,=2)[A!R]"
         ),
         "mie": "Glucocorticoid receptor (GR) activation",
-        "aops": [], "precision": 1.0,
+        "aops": ["318"], "precision": 1.0,
     },
 ]
 
